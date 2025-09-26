@@ -45,6 +45,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.composeNavigation)
+            implementation(libs.materialIcons)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

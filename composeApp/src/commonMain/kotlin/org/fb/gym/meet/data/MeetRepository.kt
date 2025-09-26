@@ -57,9 +57,9 @@ class MeetRepository {
         }
     }
 
-    fun getResults(meetId: String, gymnastId: String): Score {
-        return Score(
-            floor = 8.4
+    fun getResults(meetId: String, gymnastId: String): ScoreCard {
+        return ScoreCard(
+            floor = Score(8.4)
         )
     }
 
