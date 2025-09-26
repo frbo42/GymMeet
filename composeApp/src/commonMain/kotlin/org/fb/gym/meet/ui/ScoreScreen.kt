@@ -21,12 +21,14 @@ import org.fb.gym.meet.data.Gymnast
 import org.fb.gym.meet.data.Score
 import org.fb.gym.meet.data.ScoreCard
 import org.fb.gym.meet.data.VaultScore
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Preview
 @Composable
 fun ScoreScreen(
-    gymnast: Gymnast,
-    initialScoreCard: ScoreCard,
+    gymnast: Gymnast = Gymnast("1", "Olivier Bommeli"),
+    initialScoreCard: ScoreCard = ScoreCard(),
     // In a real app you would probably pass a ViewModel and call viewModel.update(...)
     onScoreCardChanged: (ScoreCard) -> Unit = {}
 ) {
@@ -110,17 +112,17 @@ private fun VaultRow(
     onVaultChanged: (VaultScore) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var preText by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+    var firstJumpText by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(vault.firstJump.toString()))
     }
-    var postText by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+    var secondJumpText by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(vault.secondJump.toString()))
     }
 
     // Keep UI in sync when the parent updates the vault object
     LaunchedEffect(vault) {
-        preText = TextFieldValue(vault.firstJump.toString())
-        postText = TextFieldValue(vault.secondJump.toString())
+        firstJumpText = TextFieldValue(vault.firstJump.toString())
+        secondJumpText = TextFieldValue(vault.secondJump.toString())
     }
 
     Row(
@@ -143,36 +145,36 @@ private fun VaultRow(
             modifier = Modifier.weight(1f)
         )
 
-        // Pre‑flight field
+        // first field
         TextField(
-            value = preText,
+            value = firstJumpText,
             onValueChange = {
-                if (it.text.matches(Regex("^\\d*(\\.\\d{0,3})?\$"))) {
-                    preText = it
+                if (it.text.matches(Regex("^\\d*(\\.\\d{0,2})?\$"))) {
+                    firstJumpText = it
                     val parsed = it.text.toDoubleOrNull()
                     onVaultChanged(vault.copy(firstJump = Score(parsed ?: 0.0)))
                 }
             },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal),
             singleLine = true,
-            placeholder = { Text("Pre") },
+            placeholder = { Text("First") },
             modifier = Modifier.width(70.dp)
         )
         Spacer(Modifier.width(8.dp))
 
-        // Post‑flight field
+        // second field
         TextField(
-            value = postText,
+            value = secondJumpText,
             onValueChange = {
-                if (it.text.matches(Regex("^\\d*(\\.\\d{0,3})?\$"))) {
-                    postText = it
+                if (it.text.matches(Regex("^\\d*(\\.\\d{0,2})?\$"))) {
+                    secondJumpText = it
                     val parsed = it.text.toDoubleOrNull()
                     onVaultChanged(vault.copy(secondJump = Score(parsed ?: 0.0)))
                 }
             },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal),
             singleLine = true,
-            placeholder = { Text("Post") },
+            placeholder = { Text("Second") },
             modifier = Modifier.width(70.dp)
         )
     }
