@@ -5,6 +5,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -47,7 +48,7 @@ fun ScoreScreen(
                 navigationIcon = {
                     IconButton(onClick = { /* handle back */ }) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack, contentDescription = "Back"
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back"
                         )
                     }
                 }
@@ -63,7 +64,7 @@ fun ScoreScreen(
         ) {
             // ----- FLOOR ----------------------------------------------------
             ScoreRow(
-                icon = Icons.Default.Home, // replace with a floor‑icon
+                icon = Icons.Default.FitnessCenter, // replace with a floor‑icon
                 label = "Floor",
                 score = scoreCard.floor,
                 onScoreChanged = { updateCard(scoreCard.copy(floor = it)) }
@@ -71,10 +72,10 @@ fun ScoreScreen(
 
             // ----- RINGS ----------------------------------------------------
             ScoreRow(
-                icon = Icons.Default.CropSquare, // replace with a rings‑icon
+                icon = Icons.Default.SportsBar, // replace with a rings‑icon
                 label = "Rings",
-                score = scoreCard.ring,
-                onScoreChanged = { updateCard(scoreCard.copy(ring = it)) }
+                score = scoreCard.rings,
+                onScoreChanged = { updateCard(scoreCard.copy(rings = it)) }
             )
 
             // ----- VAULT ----------------------------------------------------
@@ -85,7 +86,7 @@ fun ScoreScreen(
 
             // ----- PARALLEL BARS --------------------------------------------
             ScoreRow(
-                icon = Icons.Default.DirectionsRun, // replace with parallel‑bars icon
+                icon = Icons.Default.SportsGymnastics, // replace with parallel‑bars icon
                 label = "Parallel Bars",
                 score = scoreCard.parallel,
                 onScoreChanged = { updateCard(scoreCard.copy(parallel = it)) }
@@ -93,7 +94,7 @@ fun ScoreScreen(
 
             // ----- HORIZONTAL BAR -------------------------------------------
             ScoreRow(
-                icon = Icons.Default.Star, // replace with horizontal‑bar icon
+                icon = Icons.Default.Sports, // replace with horizontal‑bar icon
                 label = "Horizontal Bar",
                 score = scoreCard.bar,
                 onScoreChanged = { updateCard(scoreCard.copy(bar = it)) }
@@ -194,7 +195,7 @@ private val ScoreCardSaver = Saver<ScoreCard, List<Double>>(
     save = { card ->
         listOf(
             card.floor.value,
-            card.ring.value,
+            card.rings.value,
             card.vault.firstJump.value,
             card.vault.secondJump.value,
             card.parallel.value,
@@ -210,7 +211,7 @@ private val ScoreCardSaver = Saver<ScoreCard, List<Double>>(
         } else {
             ScoreCard(
                 floor = Score(list[0]),
-                ring = Score(list[1]),
+                rings = Score(list[1]),
                 vault = VaultScore(
                     firstJump = Score(list[2]),
                     secondJump = Score(list[3])

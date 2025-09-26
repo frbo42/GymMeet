@@ -7,7 +7,7 @@ import kotlin.math.round
 
 data class ScoreCard(
     val floor: Score = Score(),
-    val ring: Score = Score(),
+    val rings: Score = Score(),
     val vault: VaultScore = VaultScore(),
     val parallel: Score = Score(),
     val bar: Score = Score()
