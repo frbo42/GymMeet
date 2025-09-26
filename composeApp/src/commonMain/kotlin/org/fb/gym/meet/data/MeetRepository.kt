@@ -1,5 +1,9 @@
 package org.fb.gym.meet.data
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+
 class MeetRepository {
 
     private val meets: List<Meet> = mutableListOf(
@@ -65,5 +69,17 @@ class MeetRepository {
 
     fun getGymnast(gymnastId: String): Gymnast {
         return gymnasts.find { it.id == gymnastId }!!
+    }
+
+    private val storage = mutableMapOf<ScoreCardId, MutableStateFlow<ScoreCard>>()
+
+    fun observeScoreCard(scoreCardId: ScoreCardId): Flow<ScoreCard> {
+        return storage.getOrPut(scoreCardId) { MutableStateFlow(ScoreCard()) }.asStateFlow()
+    }
+
+    suspend fun saveScoreCard(scoreCardId: ScoreCardId, scoreCard: ScoreCard) {
+        val flow = storage.getOrPut(scoreCardId) { MutableStateFlow(ScoreCard()) }
+        flow.value = scoreCard
+        println("saved scoreCard: $scoreCardId - $scoreCard")
     }
 }

@@ -4,6 +4,10 @@ import kotlin.jvm.JvmInline
 import kotlin.math.pow
 import kotlin.math.round
 
+data class ScoreCardId(
+    val meetId: String,
+    val gymnastId: String
+)
 
 data class ScoreCard(
     val floor: Score = Score(),

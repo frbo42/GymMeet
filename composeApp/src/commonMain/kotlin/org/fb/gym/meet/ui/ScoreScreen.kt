@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import org.fb.gym.meet.data.Gymnast
 import org.fb.gym.meet.data.Score
 import org.fb.gym.meet.data.ScoreCard
@@ -28,20 +29,13 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun ScoreScreen(
     gymnast: Gymnast = Gymnast("1", "Olivier Bommeli"),
-    initialScoreCard: ScoreCard = ScoreCard(),
-    // In a real app you would probably pass a ViewModel and call viewModel.update(...)
-    onScoreCardChanged: (ScoreCard) -> Unit = {}
+    viewModel: ScoreViewModel = viewModel()
 ) {
     // Keep a mutable copy locally – this is the source of truth for the UI
-    var scoreCard by rememberSaveable(stateSaver = ScoreCardSaver) {
-        mutableStateOf(initialScoreCard)
-    }
+    val scoreCard: ScoreCard by viewModel.scoreCard.collectAsState()
 
     // Helper to propagate changes upward (e.g., to a ViewModel)
-    fun updateCard(updated: ScoreCard) {
-        scoreCard = updated
-        onScoreCardChanged(updated)
-    }
+    fun updateCard(updated: ScoreCard) = viewModel.updateScoreCard(updated)
 
     Scaffold(
         topBar = {

@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import org.fb.gym.meet.data.MeetRepository
+import org.fb.gym.meet.data.ScoreCardId
 
 sealed class Screen(val route: String) {
     object Meet : Screen("meets")
@@ -71,7 +72,7 @@ private fun NavGraphBuilder.scoreRoute(
         val gymnastId = handleGymnastId ?: return@composable
         ScoreScreen(
             meetRepository.getGymnast(gymnastId),
-            meetRepository.getResults(meetId, gymnastId),
+            ScoreViewModel(ScoreCardId(meetId, gymnastId), meetRepository)
         )
     }
 }
