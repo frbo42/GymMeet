@@ -72,7 +72,8 @@ private fun NavGraphBuilder.scoreRoute(
         val gymnastId = handleGymnastId ?: return@composable
         ScoreScreen(
             meetRepository.getGymnast(gymnastId),
-            ScoreViewModel(ScoreCardId(meetId, gymnastId), meetRepository)
+            ScoreViewModel(ScoreCardId(meetId, gymnastId), meetRepository),
+            onBackClick = { navController.popBackStack() }
         )
     }
 }

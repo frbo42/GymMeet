@@ -29,7 +29,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun ScoreScreen(
     gymnast: Gymnast = Gymnast("1", "Olivier Bommeli"),
-    viewModel: ScoreViewModel = viewModel()
+    viewModel: ScoreViewModel = viewModel(),
+    onBackClick: () -> Unit = {},
 ) {
     // Keep a mutable copy locally – this is the source of truth for the UI
     val scoreCard: ScoreCard by viewModel.scoreCard.collectAsState()
@@ -42,7 +43,7 @@ fun ScoreScreen(
             TopAppBar(
                 title = { Text(gymnast.name) },
                 navigationIcon = {
-                    IconButton(onClick = { /* handle back */ }) {
+                    IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back"
                         )
