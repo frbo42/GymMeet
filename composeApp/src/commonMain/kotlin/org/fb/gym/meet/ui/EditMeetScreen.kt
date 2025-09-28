@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import org.fb.gym.meet.data.Meet
@@ -51,9 +52,9 @@ fun CreateMeetScreen(
         }
 
         // Very simple date validation – you can replace this with a proper date picker later
-        val datePattern = Regex("""\d{4}-\d{2}-\d{2}""")   // YYYY‑MM‑DD
+        val datePattern = Regex("""\d{2}\.\d{2}\.\d{4}""")   // DD.MM.YYYY
         if (!datePattern.matches(date)) {
-            dateError = "Enter a date like 2025-09-28"
+            dateError = "Enter a date like 28.09.2025"
             valid = false
         }
 
@@ -111,7 +112,7 @@ fun CreateMeetScreen(
                 isError = nameError != null,
                 singleLine = true,
                 keyboardOptions = KeyboardOptions.Default.copy(
-//                    imeAction = ImeAction.Next,
+                    imeAction = ImeAction.Next,
                     keyboardType = KeyboardType.Text
                 ),
                 modifier = Modifier.fillMaxWidth()
@@ -129,12 +130,12 @@ fun CreateMeetScreen(
             OutlinedTextField(
                 value = date,
                 onValueChange = { date = it },
-                label = { Text("Date (YYYY‑MM‑DD)") },
-                placeholder = { Text("2025-09-28") },
+                label = { Text("Date (DD.MM.YYYY)") },
+                placeholder = { Text("28.09.2025") },
                 isError = dateError != null,
                 singleLine = true,
                 keyboardOptions = KeyboardOptions.Default.copy(
-//                    imeAction = ImeAction.Done,
+                    imeAction = ImeAction.Done,
                     keyboardType = KeyboardType.Number
                 ),
                 modifier = Modifier.fillMaxWidth()
