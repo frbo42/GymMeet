@@ -14,14 +14,15 @@ fun EditMeetScreen() {
 @Preview
 @Composable
 fun CreateMeetScreen(
+    onBackClick: () -> Unit = {},
     onSaveClick: () -> Unit = {}
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Create Meets") },
+                title = { Text("Create New Meet") },
                 navigationIcon = {
-                    IconButton(onClick = { onSaveClick() }) {
+                    IconButton(onClick = { onBackClick() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back"
                         )

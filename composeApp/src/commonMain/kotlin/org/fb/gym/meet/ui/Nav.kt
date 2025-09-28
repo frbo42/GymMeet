@@ -53,6 +53,7 @@ private fun NavGraphBuilder.newMeetRoute(
 ) {
     composable(Screen.NewMeet.route) {
         CreateMeetScreen(
+            onBackClick = { navController.popBackStack() }
 //            meetRepository.findMeets(),
 //            onClick = { meetId -> navController.navigate(Screen.Gymnast(meetId).route) },
 //            onNewClick = { navController.navigate(Screen.NewMeet.route) }
