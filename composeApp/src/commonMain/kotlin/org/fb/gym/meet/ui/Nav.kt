@@ -1,6 +1,7 @@
 package org.fb.gym.meet.ui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -39,8 +40,9 @@ private fun NavGraphBuilder.meetRoute(
     navController: NavHostController
 ) {
     composable(Screen.Meet.route) {
+        val vm = MeetViewModel(meetRepository)
         MeetScreen(
-            meetRepository.findMeets(),
+            meets = vm.meets.collectAsState().value,
             onClick = { meetId -> navController.navigate(Screen.Gymnast(meetId).route) },
             onNewClick = { navController.navigate(Screen.NewMeet.route) }
         )
@@ -52,11 +54,13 @@ private fun NavGraphBuilder.newMeetRoute(
     navController: NavHostController
 ) {
     composable(Screen.NewMeet.route) {
+        val vm = MeetViewModel(meetRepository)
         CreateMeetScreen(
-            onBackClick = { navController.popBackStack() }
-//            meetRepository.findMeets(),
-//            onClick = { meetId -> navController.navigate(Screen.Gymnast(meetId).route) },
-//            onNewClick = { navController.navigate(Screen.NewMeet.route) }
+            onBackClick = { navController.popBackStack() },
+            onSaveClick = { newMeet ->
+                vm.addMeet(newMeet)
+                navController.popBackStack()
+            }
         )
     }
 }

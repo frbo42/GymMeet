@@ -23,6 +23,26 @@ class MeetRepository {
         return meets
     }
 
+    // Internal mutable list that backs the public flow
+    private val _meets = MutableStateFlow<List<Meet>>(emptyList())
+    fun observeMeets(): Flow<List<Meet>> = _meets.asStateFlow()
+
+    suspend fun saveMeet(meet: Meet) {
+        // Replace an existing meet with the same id, otherwise append
+        val updated = _meets.value.toMutableList()
+        val index = updated.indexOfFirst { it.id == meet.id }
+        if (index >= 0) {
+            updated[index] = meet
+        } else {
+            updated.add(meet)
+        }
+        _meets.value = updated
+    }
+
+    suspend fun deleteMeet(meetId: String) {
+        _meets.value = _meets.value.filterNot { it.id == meetId }
+    }
+
     companion object {
         var gymnasts =
             setOf(

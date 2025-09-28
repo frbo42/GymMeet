@@ -25,55 +25,42 @@ fun EditMeetScreen() {
 @Composable
 fun CreateMeetScreen(
     onBackClick: () -> Unit = {},
-    /** Called with the newly created Meet when the user taps Save */
     onSaveClick: (Meet) -> Unit = {}
 ) {
-    // -----------------------------------------------------------------
-    // 1️⃣  UI state – rememberSaveable so it survives rotation / process kill
-    // -----------------------------------------------------------------
     var name by rememberSaveable { mutableStateOf("") }
-    var date by rememberSaveable { mutableStateOf("") }          // simple text field for now
+    var date by rememberSaveable { mutableStateOf("") }
     var nameError by remember { mutableStateOf<String?>(null) }
     var dateError by remember { mutableStateOf<String?>(null) }
 
-    // -----------------------------------------------------------------
-    // 2️⃣  Helper that validates the inputs and, if ok, builds a Meet
-    // -----------------------------------------------------------------
     fun trySave() {
-        // Reset errors
         nameError = null
         dateError = null
-
-        var valid = true
+        var ok = true
 
         if (name.isBlank()) {
             nameError = "Name cannot be empty"
-            valid = false
+            ok = false
         }
 
-        // Very simple date validation – you can replace this with a proper date picker later
         val datePattern = Regex("""\d{2}\.\d{2}\.\d{4}""")   // DD.MM.YYYY
         if (!datePattern.matches(date)) {
             dateError = "Enter a date like 28.09.2025"
-            valid = false
+            ok = false
         }
 
-        if (valid) {
-            // Generate a UUID for the meet ID (multiplatform)
+        if (ok) {
+            // Generate a UUID (multiplatform)
             val id = Uuid.random().toString()
-            val newMeet = Meet(
+            val meet = Meet(
                 id = id,
                 name = name.trim(),
                 date = date.trim(),
-                gymnasts = emptyList()   // we’ll add gymnasts later
+                gymnasts = emptyList()
             )
-            onSaveClick(newMeet)
+            onSaveClick(meet)
         }
     }
 
-    // -----------------------------------------------------------------
-    // 3️⃣  Scaffold with TopAppBar (Back on the left, Save on the right)
-    // -----------------------------------------------------------------
     Scaffold(
         topBar = {
             TopAppBar(
@@ -94,17 +81,13 @@ fun CreateMeetScreen(
             )
         }
     ) { innerPadding ->
-        // -----------------------------------------------------------------
-        // 4️⃣  Form content – simple Column with two TextFields
-        // -----------------------------------------------------------------
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)          // respect Scaffold insets
+                .padding(innerPadding)
                 .padding(horizontal = 24.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // ----- Meet name -------------------------------------------------
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
@@ -126,7 +109,6 @@ fun CreateMeetScreen(
                 )
             }
 
-            // ----- Meet date -------------------------------------------------
             OutlinedTextField(
                 value = date,
                 onValueChange = { date = it },
