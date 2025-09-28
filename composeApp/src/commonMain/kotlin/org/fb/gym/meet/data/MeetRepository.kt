@@ -11,21 +11,11 @@ class MeetRepository {
             "1",
             "Geräteturnen Seelandmeisterschaft",
             "20.9.25",
-            Location(
-                "Aarestr.",
-                "3270",
-                "Aarberg",
-            )
         ),
         Meet(
             "2",
             "Schweizer Meisterschaft",
             "22.10.25",
-            Location(
-                "Harderggerstr.",
-                "3008",
-                "Bern",
-            )
         ),
     )
 

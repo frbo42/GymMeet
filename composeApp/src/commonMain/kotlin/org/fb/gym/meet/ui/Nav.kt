@@ -10,6 +10,7 @@ import org.fb.gym.meet.data.ScoreCardId
 
 sealed class Screen(val route: String) {
     object Meet : Screen("meets")
+    object NewMeet : Screen("meets/new")
     data class Gymnast(val meetId: String) : Screen("gymnasts/meets/$meetId")
     data class Score(
         val meetId: String,
@@ -27,6 +28,7 @@ fun AppNavHost(
         startDestination = Screen.Meet.route
     ) {
         meetRoute(meetRepository, navController)
+        newMeetRoute(meetRepository, navController)
         gymnastRoute(meetRepository, navController)
         scoreRoute(meetRepository, navController)
     }
@@ -39,7 +41,21 @@ private fun NavGraphBuilder.meetRoute(
     composable(Screen.Meet.route) {
         MeetScreen(
             meetRepository.findMeets(),
-            onClick = { meetId -> navController.navigate(Screen.Gymnast(meetId).route) }
+            onClick = { meetId -> navController.navigate(Screen.Gymnast(meetId).route) },
+            onNewClick = { navController.navigate(Screen.NewMeet.route) }
+        )
+    }
+}
+
+private fun NavGraphBuilder.newMeetRoute(
+    meetRepository: MeetRepository,
+    navController: NavHostController
+) {
+    composable(Screen.NewMeet.route) {
+        CreateMeetScreen(
+//            meetRepository.findMeets(),
+//            onClick = { meetId -> navController.navigate(Screen.Gymnast(meetId).route) },
+//            onNewClick = { navController.navigate(Screen.NewMeet.route) }
         )
     }
 }
