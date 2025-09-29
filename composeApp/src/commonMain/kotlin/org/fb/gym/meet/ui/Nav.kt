@@ -34,7 +34,7 @@ fun AppNavHost(
     ) {
         meetRoute(meetRepo, navController)
         createMeetRoute(meetRepo, gymnastRepo, navController)
-        gymnastRoute(meetRepo, navController)
+        gymnastRoute(meetRepo, gymnastRepo, navController)
         scoreRoute(meetRepo, navController)
     }
 }
@@ -81,6 +81,7 @@ private fun NavGraphBuilder.createMeetRoute(
 
 private fun NavGraphBuilder.gymnastRoute(
     meetRepo: MeetRepository,
+    gymnastRepo: GymnastRepository,
     navController: NavHostController
 ) {
     composable(
@@ -89,12 +90,14 @@ private fun NavGraphBuilder.gymnastRoute(
         val handle = backStackEntry.savedStateHandle.get<String>("meetId")
         val meetId = handle ?: return@composable
         val meet = meetRepo.observeMeet(meetId).collectAsState(null).value
+        val gymnasts = gymnastRepo.observeGymnasts().collectAsState(emptySet()).value
         val actions = GymnastActions(
             onBack = { navController.popBackStack() },
             onGymnastSelected = { meetId, gymnastId -> navController.navigate(Screen.Score(meetId, gymnastId).route) }
         )
         GymnastScreen(
             meet,
+            gymnasts,
             actions,
         )
     }

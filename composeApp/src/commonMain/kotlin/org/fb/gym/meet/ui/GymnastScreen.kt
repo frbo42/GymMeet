@@ -12,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.fb.gym.meet.data.Gymnast
 import org.fb.gym.meet.data.Meet
 
 
@@ -19,6 +20,7 @@ import org.fb.gym.meet.data.Meet
 @Composable
 fun GymnastScreen(
     meet: Meet?,
+    gymnasts: Collection<Gymnast>,
     actions: GymnastActions,
 ) {
     Scaffold(
@@ -43,7 +45,10 @@ fun GymnastScreen(
                     .padding(innerPadding),
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
             ) {
-                items(meet.gymnasts) { gymnast ->
+                val participatingGymnasts =
+                    gymnasts.filter { gymnast -> meet.participants.map { p -> p.gymnastId }.contains(gymnast.id) }
+
+                items(participatingGymnasts) { gymnast ->
                     Card(
                         modifier = Modifier
                             .fillMaxSize()
@@ -57,8 +62,8 @@ fun GymnastScreen(
                         )
                     }
                 }
-                }
             }
+        }
     }
 }
 

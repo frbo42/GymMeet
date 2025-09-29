@@ -9,9 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.fb.gym.meet.data.GymnastRepository
-import org.fb.gym.meet.data.Meet
-import org.fb.gym.meet.data.MeetRepository
+import org.fb.gym.meet.data.*
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -99,12 +97,13 @@ class CreateMeetViewModel(
 
         // Build the Meet object with the selected gymnasts
         val selectedGymnasts = current.allGymnasts.filter { it.id in current.selectedGymnastIds }
+        val participants = selectedGymnasts.map { g -> Participant(g.id, ScoreCard()) }
 
         val meet = Meet(
             id = Uuid.random().toString(),
             name = current.name.trim(),
             date = current.date.trim(),
-            gymnasts = selectedGymnasts
+            participants = participants
         )
 
         // Persist

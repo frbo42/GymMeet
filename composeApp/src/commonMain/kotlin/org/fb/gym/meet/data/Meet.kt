@@ -4,5 +4,10 @@ data class Meet(
     val id: String,
     val name: String,
     val date: String,
-    val gymnasts: List<Gymnast> = emptyList()
+    val participants: List<Participant> = emptyList()
+)
+
+data class Participant(
+    val gymnastId: String,
+    val scoreCard: ScoreCard = ScoreCard()
 )
