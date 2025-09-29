@@ -16,6 +16,7 @@ kotlin = "2.2.20"
 kotlinx-coroutines = "1.10.2"
 navigation-compose = "2.9.0"
 material-icons = "1.7.3"
+kotlin-date-time = "0.7.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -31,6 +32,7 @@ androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle
 kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 composeNavigation = {module= "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigation-compose"}
 materialIcons = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "material-icons" }
+kotlinxDateTime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlin-date-time" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

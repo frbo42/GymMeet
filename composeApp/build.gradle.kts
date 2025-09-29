@@ -46,6 +46,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.composeNavigation)
             implementation(libs.materialIcons)
+            implementation(libs.kotlinxDateTime)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

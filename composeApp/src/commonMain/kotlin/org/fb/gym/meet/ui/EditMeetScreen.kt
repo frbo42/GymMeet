@@ -11,8 +11,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.number
+import kotlinx.datetime.toLocalDateTime
 import org.fb.gym.meet.data.Meet
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -27,8 +32,9 @@ fun CreateMeetScreen(
     onBackClick: () -> Unit = {},
     onSaveClick: (Meet) -> Unit = {}
 ) {
+
     var name by rememberSaveable { mutableStateOf("") }
-    var date by rememberSaveable { mutableStateOf("") }
+    var date by rememberSaveable { mutableStateOf(today()) }
     var nameError by remember { mutableStateOf<String?>(null) }
     var dateError by remember { mutableStateOf<String?>(null) }
 
@@ -132,4 +138,14 @@ fun CreateMeetScreen(
             }
         }
     }
+}
+
+@OptIn(ExperimentalTime::class)
+fun today(): String {
+    val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+    val dd = now.day.toString().padStart(2, '0')
+    val mm = now.month.number.toString().padStart(2, '0')
+    val yyyy = now.year.toString()
+    return "$dd.$mm.$yyyy"
+
 }
