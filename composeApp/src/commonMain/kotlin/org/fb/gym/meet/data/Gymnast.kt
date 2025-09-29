@@ -2,7 +2,8 @@ package org.fb.gym.meet.data
 
 data class Gymnast(
    val id: String,
-   val name: String,
+   val firstName: String,
+   val lastName: String,
    val category: Category
 )
 

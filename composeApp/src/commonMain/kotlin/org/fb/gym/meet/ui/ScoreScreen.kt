@@ -18,17 +18,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import org.fb.gym.meet.data.Gymnast
-import org.fb.gym.meet.data.Score
-import org.fb.gym.meet.data.ScoreCard
-import org.fb.gym.meet.data.VaultScore
+import org.fb.gym.meet.data.*
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun ScoreScreen(
-    gymnast: Gymnast = Gymnast("1", "Olivier Bommeli"),
+    gymnast: Gymnast = Gymnast("1", "Olivier", "Bommeli", Category.C5),
     viewModel: ScoreViewModel = viewModel(),
     onBackClick: () -> Unit = {},
 ) {
@@ -41,7 +38,7 @@ fun ScoreScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(gymnast.name) },
+                title = { Text(gymnast.firstName + " " + gymnast.lastName) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(

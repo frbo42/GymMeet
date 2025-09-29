@@ -46,25 +46,25 @@ class MeetRepository {
     companion object {
         var gymnasts =
             setOf(
-                Gymnast("g-11", "Anna Müller"),
-                Gymnast("g-12", "Peter Schmid"),
-                Gymnast("g-13", "Laura Keller"),
-                Gymnast("g-21", "Markus Huber"),
-                Gymnast("g-22", "Sofia Weber"),
+                Gymnast("g-11", "Anna", "Müller", Category.C1),
+                Gymnast("g-12", "Peter", "Schmid", Category.C1),
+                Gymnast("g-13", "Laura", "Keller", Category.C1),
+                Gymnast("g-21", "Markus", "Huber", Category.C1),
+                Gymnast("g-22", "Sofia", "Weber", Category.C1),
             )
     }
 
     fun findGymnastsForMeet(meetId: String): List<Gymnast> {
         return when (meetId) {
             "1" -> listOf(
-                Gymnast("g-11", "Anna Müller"),
-                Gymnast("g-12", "Peter Schmid"),
-                Gymnast("g-13", "Laura Keller")
+                Gymnast("g-11", "Anna", "Müller", Category.C5),
+                Gymnast("g-12", "Peter", "Schmid", Category.C5),
+                Gymnast("g-13", "Laura", "Keller", Category.C5)
             )
 
             "2" -> listOf(
-                Gymnast("g-21", "Markus Huber"),
-                Gymnast("g-22", "Sofia Weber"),
+                Gymnast("g-21", "Markus", "Huber", Category.C3),
+                Gymnast("g-22", "Sofia", "Weber", Category.C3),
             )
 
             else -> emptyList()

@@ -40,7 +40,7 @@ fun GymnastScreen(
                         .clickable { onClick(meetId, gymnast.id) }
                 ) {
                     Text(
-                        text = gymnast.name,
+                        text = gymnast.firstName + " " + gymnast.lastName,
                         style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier.padding(12.dp)
                     )
