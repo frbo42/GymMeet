@@ -55,21 +55,8 @@ class MeetRepository {
             )
     }
 
-    fun findGymnastsForMeet(meetId: String): List<Gymnast> {
-        val find = _meets.value.find { meet -> meet.id == meetId }
-        return find?.gymnasts ?: emptyList()
-    }
-
-    fun observeGymnastsForMeet(meetId: String): Flow<List<Gymnast>> {
-        return observeMeets().map { meets ->
-            meets.find { meet -> meet.id == meetId }?.gymnasts ?: emptyList()
-        }
-    }
-
-    fun getResults(meetId: String, gymnastId: String): ScoreCard {
-        return ScoreCard(
-            floor = Score(8.4)
-        )
+    fun observeMeet(meetId: String): Flow<Meet?> {
+        return _meets.map { meets -> meets.find { it.id == meetId } }
     }
 
     fun getGymnast(gymnastId: String): Gymnast {

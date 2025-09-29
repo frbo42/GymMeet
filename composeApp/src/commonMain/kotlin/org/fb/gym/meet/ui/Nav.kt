@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import org.fb.gym.meet.data.GymnastRepository
 import org.fb.gym.meet.data.MeetRepository
+import org.fb.gym.meet.data.ScoreCard
 import org.fb.gym.meet.data.ScoreCardId
 
 sealed class Screen(val route: String) {
@@ -87,11 +88,14 @@ private fun NavGraphBuilder.gymnastRoute(
     ) { backStackEntry ->
         val handle = backStackEntry.savedStateHandle.get<String>("meetId")
         val meetId = handle ?: return@composable
-        val gymnasts = meetRepo.observeGymnastsForMeet(meetId).collectAsState(emptyList()).value
+        val meet = meetRepo.observeMeet(meetId).collectAsState(null).value
+        val actions = GymnastActions(
+            onBack = { navController.popBackStack() },
+            onGymnastSelected = { meetId, gymnastId -> navController.navigate(Screen.Score(meetId, gymnastId).route) }
+        )
         GymnastScreen(
-            meetId,
-            gymnasts,
-            onClick = { meetId, gymnastId -> navController.navigate(Screen.Score(meetId, gymnastId).route) }
+            meet,
+            actions,
         )
     }
 }
@@ -105,6 +109,8 @@ private fun NavGraphBuilder.scoreRoute(
         val handleGymnastId = backStackEntry.savedStateHandle.get<String>("gymnastId")
         val meetId = handleMeetId ?: return@composable
         val gymnastId = handleGymnastId ?: return@composable
+        meetRepository.observeScoreCard(ScoreCardId(meetId, gymnastId)).collectAsState(ScoreCard())
+
         ScoreScreen(
             meetRepository.getGymnast(gymnastId),
             ScoreViewModel(ScoreCardId(meetId, gymnastId), meetRepository),
