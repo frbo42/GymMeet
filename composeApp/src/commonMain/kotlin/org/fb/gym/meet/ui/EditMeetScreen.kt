@@ -147,5 +147,4 @@ fun today(): String {
     val mm = now.month.number.toString().padStart(2, '0')
     val yyyy = now.year.toString()
     return "$dd.$mm.$yyyy"
-
 }
