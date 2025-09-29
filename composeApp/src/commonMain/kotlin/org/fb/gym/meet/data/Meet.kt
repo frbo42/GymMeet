@@ -4,5 +4,5 @@ data class Meet(
     val id: String,
     val name: String,
     val date: String,
-    val gymnasts: List<String> = emptyList()
+    val gymnasts: List<Gymnast> = emptyList()
 )
