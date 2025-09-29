@@ -3,6 +3,7 @@ package org.fb.gym.meet.data
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 
 class MeetRepository {
 
@@ -55,19 +56,13 @@ class MeetRepository {
     }
 
     fun findGymnastsForMeet(meetId: String): List<Gymnast> {
-        return when (meetId) {
-            "1" -> listOf(
-                Gymnast("g-11", "Anna", "Müller", Category.C5),
-                Gymnast("g-12", "Peter", "Schmid", Category.C5),
-                Gymnast("g-13", "Laura", "Keller", Category.C5)
-            )
+        val find = _meets.value.find { meet -> meet.id == meetId }
+        return find?.gymnasts ?: emptyList()
+    }
 
-            "2" -> listOf(
-                Gymnast("g-21", "Markus", "Huber", Category.C3),
-                Gymnast("g-22", "Sofia", "Weber", Category.C3),
-            )
-
-            else -> emptyList()
+    fun observeGymnastsForMeet(meetId: String): Flow<List<Gymnast>> {
+        return observeMeets().map { meets ->
+            meets.find { meet -> meet.id == meetId }?.gymnasts ?: emptyList()
         }
     }
 

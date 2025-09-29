@@ -79,7 +79,7 @@ private fun NavGraphBuilder.createMeetRoute(
 }
 
 private fun NavGraphBuilder.gymnastRoute(
-    meetRepository: MeetRepository,
+    meetRepo: MeetRepository,
     navController: NavHostController
 ) {
     composable(
@@ -87,9 +87,10 @@ private fun NavGraphBuilder.gymnastRoute(
     ) { backStackEntry ->
         val handle = backStackEntry.savedStateHandle.get<String>("meetId")
         val meetId = handle ?: return@composable
+        val gymnasts = meetRepo.observeGymnastsForMeet(meetId).collectAsState(emptyList()).value
         GymnastScreen(
             meetId,
-            meetRepository.findGymnastsForMeet(meetId),
+            gymnasts,
             onClick = { meetId, gymnastId -> navController.navigate(Screen.Score(meetId, gymnastId).route) }
         )
     }
