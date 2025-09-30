@@ -72,7 +72,7 @@ private fun NavGraphBuilder.editMeetRoute(
             gymnastRepo
         )
         val uiState = vm.uiState.collectAsState()
-        val actions = CreateMeetActions(
+        val actions = EditMeetActions(
             onBack = { navController.popBackStack() },
             onSave = {
                 vm.onSave()
@@ -80,7 +80,7 @@ private fun NavGraphBuilder.editMeetRoute(
             },
             onAddGymnast = { navController.navigate(Screen.CreateGymnast) }
         )
-        CreateMeetScreen(
+        EditMeetScreen(
             state = uiState,
             actions = actions,
             onNameChanged = vm::onNameChanged,

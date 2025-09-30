@@ -22,25 +22,16 @@ import kotlinx.datetime.toLocalDateTime
 import org.fb.gym.meet.data.Gymnast
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
-import kotlin.uuid.ExperimentalUuidApi
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditMeetScreen() {
-}
-
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalUuidApi::class)
-//@Preview(showBackground = true)
-@Composable
-fun CreateMeetScreen(
-    state: State<CreateMeetUiState>,
-    actions: CreateMeetActions,
+fun EditMeetScreen(
+    state: State<EditMeetUiState>,
+    actions: EditMeetActions,
     onNameChanged: (String) -> Unit,
     onDateChanged: (String) -> Unit,
     onGymnastToggle: (String) -> Unit,
 ) {
-
-
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -190,7 +181,7 @@ fun GymnastMultiSelect(
     }
 }
 
-data class CreateMeetUiState(
+data class EditMeetUiState(
     val name: String = List(5) { ('a'..'z').random() }.joinToString(""),
     val date: String = today(),               // formatted as DD.MM.YYYY
     val nameError: String? = null,
@@ -201,7 +192,7 @@ data class CreateMeetUiState(
     val allGymnasts: List<Gymnast> = emptyList()
 )
 
-data class CreateMeetActions(
+data class EditMeetActions(
     val onBack: () -> Unit = {},
     /** Called when the user taps “Save”. */
     val onSave: () -> Unit = {},

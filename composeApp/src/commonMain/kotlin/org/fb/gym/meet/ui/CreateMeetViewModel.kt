@@ -30,8 +30,8 @@ class CreateMeetViewModel(
     // -----------------------------------------------------------------
     // 1️⃣  UI state – combines the meet fields + the list of gymnasts
     // -----------------------------------------------------------------
-    private val _uiState = MutableStateFlow(CreateMeetUiState())
-    val uiState: StateFlow<CreateMeetUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(EditMeetUiState())
+    val uiState: StateFlow<EditMeetUiState> = _uiState.asStateFlow()
 
     init {
         externalScope.launch {
@@ -119,6 +119,6 @@ class CreateMeetViewModel(
         }
 
         // Reset UI (optional – you could also navigate away)
-        _uiState.value = CreateMeetUiState()
+        _uiState.value = EditMeetUiState()
     }
 }
