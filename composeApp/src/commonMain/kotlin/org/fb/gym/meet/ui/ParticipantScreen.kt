@@ -18,10 +18,10 @@ import org.fb.gym.meet.data.Meet
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GymnastScreen(
+fun ParticipantScreen(
     meet: Meet?,
     gymnasts: Collection<Gymnast>,
-    actions: GymnastActions,
+    actions: ParticipantActions,
 ) {
     Scaffold(
         topBar = {
@@ -67,7 +67,7 @@ fun GymnastScreen(
     }
 }
 
-class GymnastActions(
+class ParticipantActions(
     val onBack: () -> Unit = {},
     val onGymnastSelected: (String, String) -> Unit
 )

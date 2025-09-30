@@ -15,8 +15,8 @@ import kotlin.uuid.Uuid
 sealed class Screen(val route: String) {
     object Meet : Screen("meets")
     data class EditMeet(val meetId: String?) : Screen("meets/edit/$meetId")
-    data class Gymnast(val meetId: String) : Screen("gymnasts/meets/$meetId")
-    object CreateGymnast : Screen("gymnasts/create")
+    data class Participant(val meetId: String) : Screen("meets/$meetId/participants")
+    data class EditGymnast(val gymnastId: String?) : Screen("gymnasts/edit/$gymnastId")
     data class Score(
         val meetId: String,
         val gymnastId: String
@@ -35,7 +35,7 @@ fun AppNavHost(
     ) {
         meetRoute(meetRepo, navController)
         editMeetRoute(meetRepo, gymnastRepo, navController)
-        gymnastRoute(meetRepo, gymnastRepo, navController)
+        participantRoute(meetRepo, gymnastRepo, navController)
         scoreRoute(meetRepo, gymnastRepo, navController)
     }
 }
@@ -49,7 +49,7 @@ private fun NavGraphBuilder.meetRoute(
         MeetScreen(
             meets = vm.meets.collectAsState().value,
             MeetActions(
-                onSelectMeet = { meetId -> navController.navigate(Screen.Gymnast(meetId).route) },
+                onSelectMeet = { meetId -> navController.navigate(Screen.Participant(meetId).route) },
                 onCreateMeet = { navController.navigate(Screen.EditMeet(null).route) },
                 onEditMeet = { meetId -> navController.navigate(Screen.EditMeet(meetId).route) },
             )
@@ -78,7 +78,7 @@ private fun NavGraphBuilder.editMeetRoute(
                 vm.onSave()
                 navController.popBackStack()
             },
-            onAddGymnast = { navController.navigate(Screen.CreateGymnast) }
+            onAddGymnast = { gymnastId -> navController.navigate(Screen.EditGymnast(gymnastId).route) }
         )
         EditMeetScreen(
             state = uiState,
@@ -90,23 +90,23 @@ private fun NavGraphBuilder.editMeetRoute(
     }
 }
 
-private fun NavGraphBuilder.gymnastRoute(
+private fun NavGraphBuilder.participantRoute(
     meetRepo: MeetRepository,
     gymnastRepo: GymnastRepository,
     navController: NavHostController
 ) {
     composable(
-        route = Screen.Gymnast("{meetId}").route
+        route = Screen.Participant("{meetId}").route
     ) { backStackEntry ->
         val handle = backStackEntry.savedStateHandle.get<String>("meetId")
         val meetId = handle ?: return@composable
         val meet = meetRepo.observeMeet(meetId).collectAsState(null).value
         val gymnasts = gymnastRepo.observeGymnasts().collectAsState(emptySet()).value
-        val actions = GymnastActions(
+        val actions = ParticipantActions(
             onBack = { navController.popBackStack() },
             onGymnastSelected = { meetId, gymnastId -> navController.navigate(Screen.Score(meetId, gymnastId).route) }
         )
-        GymnastScreen(
+        ParticipantScreen(
             meet,
             gymnasts,
             actions,

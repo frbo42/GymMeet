@@ -118,7 +118,7 @@ fun GymnastMultiSelect(
     allGymnasts: List<Gymnast>,
     selectedIds: Set<String>,
     onToggle: (String) -> Unit,
-    onAddGymnast: () -> Unit,
+    onAddGymnast: (String?) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
@@ -131,7 +131,7 @@ fun GymnastMultiSelect(
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.weight(1f)
             )
-            TextButton(onClick = onAddGymnast) {
+            TextButton(onClick = { onAddGymnast(null) }) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = "Add Gymnast"
@@ -197,7 +197,7 @@ data class EditMeetActions(
     /** Called when the user taps “Save”. */
     val onSave: () -> Unit = {},
     /** Called when the user wants to add a brand‑new gymnast (navigate). */
-    val onAddGymnast: () -> Unit = {}
+    val onAddGymnast: (String?) -> Unit = {}
 )
 
 @OptIn(ExperimentalTime::class)
