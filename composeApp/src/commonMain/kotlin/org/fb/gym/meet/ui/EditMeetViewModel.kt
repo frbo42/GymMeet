@@ -20,7 +20,7 @@ import kotlin.uuid.Uuid
  * from Android, Desktop, iOS, etc.  The only requirement is a CoroutineScope.
  */
 @OptIn(ExperimentalUuidApi::class)
-class CreateMeetViewModel(
+class EditMeetViewModel(
     private val meetId: String = Uuid.random().toString(),
     private val meetRepo: MeetRepository,
     private val gymnastRepo: GymnastRepository,
@@ -39,8 +39,8 @@ class CreateMeetViewModel(
                 .collect { meet ->
                     _uiState.update {
                         it.copy(
-                            name = meet?.name ?: "",
-                            date = meet?.date ?: "",
+                            name = meet?.name ?: List(5) { ('a'..'z').random() }.joinToString(""),
+                            date = meet?.date ?: today(),
                             selectedGymnastIds = meet?.participants?.map { it.gymnastId }?.toSet() ?: emptySet()
                         )
                     }

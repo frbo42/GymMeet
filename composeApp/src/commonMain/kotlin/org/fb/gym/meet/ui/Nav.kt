@@ -66,7 +66,7 @@ private fun NavGraphBuilder.editMeetRoute(
     composable(Screen.EditMeet("{meetId}").route) { backStackEntry ->
         val handle = backStackEntry.savedStateHandle.get<String>("meetId")
         val meetId = handle ?: Uuid.random().toString()
-        val vm = CreateMeetViewModel(
+        val vm = EditMeetViewModel(
             meetId,
             meetRepo,
             gymnastRepo

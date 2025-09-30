@@ -182,7 +182,7 @@ fun GymnastMultiSelect(
 }
 
 data class EditMeetUiState(
-    val name: String = List(5) { ('a'..'z').random() }.joinToString(""),
+    val name: String = "",
     val date: String = today(),               // formatted as DD.MM.YYYY
     val nameError: String? = null,
     val dateError: String? = null,
