@@ -4,23 +4,6 @@ import kotlinx.coroutines.flow.*
 
 class MeetRepository {
 
-    private val meets: List<Meet> = mutableListOf(
-        Meet(
-            "1",
-            "Geräteturnen Seelandmeisterschaft",
-            "20.9.25",
-        ),
-        Meet(
-            "2",
-            "Schweizer Meisterschaft",
-            "22.10.25",
-        ),
-    )
-
-    fun findMeets(): List<Meet> {
-        return meets
-    }
-
     // Internal mutable list that backs the public flow
     private val _meets = MutableStateFlow<List<Meet>>(emptyList())
     fun observeMeets(): Flow<List<Meet>> = _meets.asStateFlow()
@@ -41,23 +24,8 @@ class MeetRepository {
         _meets.value = _meets.value.filterNot { it.id == meetId }
     }
 
-    companion object {
-        var gymnasts =
-            setOf(
-                Gymnast("g-11", "Anna", "Müller", Category.C1),
-                Gymnast("g-12", "Peter", "Schmid", Category.C1),
-                Gymnast("g-13", "Laura", "Keller", Category.C1),
-                Gymnast("g-21", "Markus", "Huber", Category.C1),
-                Gymnast("g-22", "Sofia", "Weber", Category.C1),
-            )
-    }
-
     fun observeMeet(meetId: String): Flow<Meet?> {
         return _meets.map { meets -> meets.find { it.id == meetId } }
-    }
-
-    fun getGymnast(gymnastId: String): Gymnast {
-        return gymnasts.find { it.id == gymnastId }!!
     }
 
     private val storage = mutableMapOf<ScoreCardId, MutableStateFlow<ScoreCard>>()
