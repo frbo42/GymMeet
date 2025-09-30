@@ -19,7 +19,9 @@ import kotlin.uuid.Uuid
  * The ViewModel is deliberately *platform‑agnostic* – you can instantiate it
  * from Android, Desktop, iOS, etc.  The only requirement is a CoroutineScope.
  */
+@OptIn(ExperimentalUuidApi::class)
 class CreateMeetViewModel(
+    private val meetId: String = Uuid.random().toString(),
     private val meetRepo: MeetRepository,
     private val gymnastRepo: GymnastRepository,
     private val externalScope: CoroutineScope = CoroutineScope(Dispatchers.Main + Job())
@@ -32,7 +34,18 @@ class CreateMeetViewModel(
     val uiState: StateFlow<CreateMeetUiState> = _uiState.asStateFlow()
 
     init {
-        // Observe the global list of gymnasts and push it into the UI state
+        externalScope.launch {
+            meetRepo.observeMeet(meetId)
+                .collect { meet ->
+                    _uiState.update {
+                        it.copy(
+                            name = meet?.name ?: "",
+                            date = meet?.date ?: "",
+                            selectedGymnastIds = meet?.participants?.map { it.gymnastId }?.toSet() ?: emptySet()
+                        )
+                    }
+                }
+        }
         externalScope.launch {
             gymnastRepo.observeGymnasts()
                 .collect { list ->
@@ -45,11 +58,8 @@ class CreateMeetViewModel(
     // 2️⃣  Mutators for the text fields
     // -----------------------------------------------------------------
     fun onNameChanged(newName: String) {
-        println("new name: ${_uiState.value}")
         _uiState.update { it.copy(name = newName, nameError = null) }
-        println("new name: ${_uiState.value}")
     }
-
 
     fun onDateChanged(newDate: String) {
         _uiState.update { it.copy(date = newDate, dateError = null) }
@@ -69,10 +79,7 @@ class CreateMeetViewModel(
     // -----------------------------------------------------------------
     // 4️⃣  Save the meet (validation + repository call)
     // -----------------------------------------------------------------
-    @OptIn(ExperimentalUuidApi::class)
     fun onSave() {
-
-        println("on save: ${_uiState.value}")
 
         val current = _uiState.value
         var ok = true
@@ -100,7 +107,7 @@ class CreateMeetViewModel(
         val participants = selectedGymnasts.map { g -> Participant(g.id, ScoreCard()) }
 
         val meet = Meet(
-            id = Uuid.random().toString(),
+            id = meetId,
             name = current.name.trim(),
             date = current.date.trim(),
             participants = participants

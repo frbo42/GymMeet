@@ -9,6 +9,8 @@ import androidx.navigation.compose.composable
 import org.fb.gym.meet.data.GymnastRepository
 import org.fb.gym.meet.data.MeetRepository
 import org.fb.gym.meet.data.ScoreCardId
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 sealed class Screen(val route: String) {
     object Meet : Screen("meets")
@@ -60,14 +62,19 @@ private fun NavGraphBuilder.meetRoute(
     }
 }
 
+
+@OptIn(ExperimentalUuidApi::class)
 private fun NavGraphBuilder.createMeetRoute(
-    meetRepository: MeetRepository,
+    meetRepo: MeetRepository,
     gymnastRepo: GymnastRepository,
     navController: NavHostController
 ) {
     composable(Screen.CreateMeet.route) {
-        println("createMeetRoute")
-        val vm = CreateMeetViewModel(meetRepository, gymnastRepo)
+        val vm = CreateMeetViewModel(
+            Uuid.random().toString(),
+            meetRepo,
+            gymnastRepo
+        )
         val uiState = vm.uiState.collectAsState()
         val actions = CreateMeetActions(
             onBack = { navController.popBackStack() },
@@ -92,8 +99,30 @@ private fun NavGraphBuilder.editMeetRoute(
     gymnastRepo: GymnastRepository,
     navController: NavHostController
 ) {
-    composable(Screen.EditMeet("{meetId}").route) {
-        EditMeetScreen()
+    composable(Screen.EditMeet("{meetId}").route) { backStackEntry ->
+        val handle = backStackEntry.savedStateHandle.get<String>("meetId")
+        val meetId = handle ?: return@composable
+        val vm = CreateMeetViewModel(
+            meetId,
+            meetRepo,
+            gymnastRepo
+        )
+        val uiState = vm.uiState.collectAsState()
+        val actions = CreateMeetActions(
+            onBack = { navController.popBackStack() },
+            onSave = {
+                vm.onSave()
+                navController.popBackStack()
+            },
+            onAddGymnast = { navController.navigate(Screen.CreateGymnast) }
+        )
+        CreateMeetScreen(
+            state = uiState,
+            actions = actions,
+            onNameChanged = vm::onNameChanged,
+            onDateChanged = vm::onDateChanged,
+            onGymnastToggle = vm::toggleGymnastSelection,
+        )
     }
 }
 
