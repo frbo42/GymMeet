@@ -31,7 +31,6 @@ fun ScoreScreen(
 ) {
     // Keep a mutable copy locally – this is the source of truth for the UI
     val scoreCard by viewModel.scoreCard.collectAsState()
-//    fun updateCard(updated: ScoreCard) = viewModel.updateScoreCard(updated)
 
     // Helper to propagate changes upward (e.g., to a ViewModel)
 
@@ -49,11 +48,22 @@ fun ScoreScreen(
             )
         }
     ) { innerPadding ->
-        ScoreCardContent(
-            innerPadding,
-            scoreCard!!,
-            viewModel
+        if (scoreCard == null) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("No score yet for this gymnast.", style = MaterialTheme.typography.bodyLarge)
+            }
+        } else {
+            ScoreCardContent(
+                innerPadding,
+                scoreCard!!,
+                viewModel
             )
+        }
     }
 }
 
