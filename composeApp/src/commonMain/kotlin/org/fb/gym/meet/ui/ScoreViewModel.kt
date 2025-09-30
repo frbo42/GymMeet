@@ -25,7 +25,7 @@ class ScoreViewModel(
 ) {
 
     /** Public read‑only stream of the current ScoreCard. */
-    val scoreCard: StateFlow<ScoreCard> = repository
+    val scoreCard: StateFlow<ScoreCard?> = repository
         .observeScoreCard(scoreCardId)
         .stateIn(
             scope = externalScope,

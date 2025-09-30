@@ -8,7 +8,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import org.fb.gym.meet.data.GymnastRepository
 import org.fb.gym.meet.data.MeetRepository
-import org.fb.gym.meet.data.ScoreCard
 import org.fb.gym.meet.data.ScoreCardId
 
 sealed class Screen(val route: String) {
@@ -35,7 +34,7 @@ fun AppNavHost(
         meetRoute(meetRepo, navController)
         createMeetRoute(meetRepo, gymnastRepo, navController)
         gymnastRoute(meetRepo, gymnastRepo, navController)
-        scoreRoute(meetRepo, navController)
+        scoreRoute(meetRepo, gymnastRepo, navController)
     }
 }
 
@@ -105,6 +104,7 @@ private fun NavGraphBuilder.gymnastRoute(
 
 private fun NavGraphBuilder.scoreRoute(
     meetRepository: MeetRepository,
+    gymnastRepo: GymnastRepository,
     navController: NavHostController
 ) {
     composable(Screen.Score("{meetId}", "{gymnastId}").route) { backStackEntry ->
@@ -112,10 +112,9 @@ private fun NavGraphBuilder.scoreRoute(
         val handleGymnastId = backStackEntry.savedStateHandle.get<String>("gymnastId")
         val meetId = handleMeetId ?: return@composable
         val gymnastId = handleGymnastId ?: return@composable
-        meetRepository.observeScoreCard(ScoreCardId(meetId, gymnastId)).collectAsState(ScoreCard())
 
         ScoreScreen(
-            meetRepository.getGymnast(gymnastId),
+            gymnastRepo.observeGymnast(gymnastId).collectAsState(null).value,
             ScoreViewModel(ScoreCardId(meetId, gymnastId), meetRepository),
             onBackClick = { navController.popBackStack() }
         )

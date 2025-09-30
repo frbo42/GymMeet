@@ -1,9 +1,6 @@
 package org.fb.gym.meet.data
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 
 class MeetRepository {
 
@@ -65,8 +62,12 @@ class MeetRepository {
 
     private val storage = mutableMapOf<ScoreCardId, MutableStateFlow<ScoreCard>>()
 
-    fun observeScoreCard(scoreCardId: ScoreCardId): Flow<ScoreCard> {
-        return storage.getOrPut(scoreCardId) { MutableStateFlow(ScoreCard()) }.asStateFlow()
+    fun observeScoreCard(scoreCardId: ScoreCardId): Flow<ScoreCard?> {
+        return _meets
+            .map { meets -> meets.find { it.id == scoreCardId.meetId } }
+            .map { meet -> meet?.participants?.find { it.gymnastId == scoreCardId.gymnastId } }
+            .map { participant -> participant?.scoreCard }
+            .distinctUntilChanged()
     }
 
     suspend fun saveScoreCard(scoreCardId: ScoreCardId, scoreCard: ScoreCard) {

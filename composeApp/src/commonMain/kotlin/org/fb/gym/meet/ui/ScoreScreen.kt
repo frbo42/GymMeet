@@ -25,20 +25,20 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Preview
 @Composable
 fun ScoreScreen(
-    gymnast: Gymnast = Gymnast("1", "Olivier", "Bommeli", Category.C5),
+    gymnast: Gymnast? = Gymnast("1", "Olivier", "Bommeli", Category.C5),
     viewModel: ScoreViewModel = viewModel(),
     onBackClick: () -> Unit = {},
 ) {
     // Keep a mutable copy locally – this is the source of truth for the UI
-    val scoreCard: ScoreCard by viewModel.scoreCard.collectAsState()
+    val scoreCard by viewModel.scoreCard.collectAsState()
+//    fun updateCard(updated: ScoreCard) = viewModel.updateScoreCard(updated)
 
     // Helper to propagate changes upward (e.g., to a ViewModel)
-    fun updateCard(updated: ScoreCard) = viewModel.updateScoreCard(updated)
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(gymnast.firstName + " " + gymnast.lastName) },
+                title = { Text(gymnast?.firstName + " " + gymnast?.lastName) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
@@ -49,54 +49,63 @@ fun ScoreScreen(
             )
         }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp)
-        ) {
-            // ----- FLOOR ----------------------------------------------------
-            ScoreRow(
-                icon = Icons.Default.FitnessCenter, // replace with a floor‑icon
-                label = "Floor",
-                score = scoreCard.floor,
-                onScoreChanged = { updateCard(scoreCard.copy(floor = it)) }
+        ScoreCardContent(
+            innerPadding,
+            scoreCard!!,
+            viewModel
             )
-
-            // ----- RINGS ----------------------------------------------------
-            ScoreRow(
-                icon = Icons.Default.SportsBar, // replace with a rings‑icon
-                label = "Rings",
-                score = scoreCard.rings,
-                onScoreChanged = { updateCard(scoreCard.copy(rings = it)) }
-            )
-
-            // ----- VAULT ----------------------------------------------------
-            VaultRow(
-                vault = scoreCard.vault,
-                onVaultChanged = { updateCard(scoreCard.copy(vault = it)) }
-            )
-
-            // ----- PARALLEL BARS --------------------------------------------
-            ScoreRow(
-                icon = Icons.Default.SportsGymnastics, // replace with parallel‑bars icon
-                label = "Parallel Bars",
-                score = scoreCard.parallel,
-                onScoreChanged = { updateCard(scoreCard.copy(parallel = it)) }
-            )
-
-            // ----- HORIZONTAL BAR -------------------------------------------
-            ScoreRow(
-                icon = Icons.Default.Sports, // replace with horizontal‑bar icon
-                label = "Horizontal Bar",
-                score = scoreCard.bar,
-                onScoreChanged = { updateCard(scoreCard.copy(bar = it)) }
-            )
-        }
     }
 }
 
+@Composable
+private fun ScoreCardContent(innerPadding: PaddingValues, scoreCard: ScoreCard, viewModel: ScoreViewModel) {
+    fun updateCard(updated: ScoreCard) = viewModel.updateScoreCard(updated)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp)
+    ) {
+        // ----- FLOOR ----------------------------------------------------
+        ScoreRow(
+            icon = Icons.Default.FitnessCenter, // replace with a floor‑icon
+            label = "Floor",
+            score = scoreCard.floor,
+            onScoreChanged = { updateCard(scoreCard.copy(floor = it)) }
+        )
+
+        // ----- RINGS ----------------------------------------------------
+        ScoreRow(
+            icon = Icons.Default.SportsBar, // replace with a rings‑icon
+            label = "Rings",
+            score = scoreCard.rings,
+            onScoreChanged = { updateCard(scoreCard.copy(rings = it)) }
+        )
+
+        // ----- VAULT ----------------------------------------------------
+        VaultRow(
+            vault = scoreCard.vault,
+            onVaultChanged = { updateCard(scoreCard.copy(vault = it)) }
+        )
+
+        // ----- PARALLEL BARS --------------------------------------------
+        ScoreRow(
+            icon = Icons.Default.SportsGymnastics, // replace with parallel‑bars icon
+            label = "Parallel Bars",
+            score = scoreCard.parallel,
+            onScoreChanged = { updateCard(scoreCard.copy(parallel = it)) }
+        )
+
+        // ----- HORIZONTAL BAR -------------------------------------------
+        ScoreRow(
+            icon = Icons.Default.Sports, // replace with horizontal‑bar icon
+            label = "Horizontal Bar",
+            score = scoreCard.bar,
+            onScoreChanged = { updateCard(scoreCard.copy(bar = it)) }
+        )
+    }
+}
 
 @Composable
 private fun VaultRow(
