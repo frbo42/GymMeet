@@ -46,8 +46,10 @@ private fun NavGraphBuilder.meetRoute(
         val vm = DisplayMeetViewModel(meetRepo)
         MeetScreen(
             meets = vm.meets.collectAsState().value,
-            onClick = { meetId -> navController.navigate(Screen.Gymnast(meetId).route) },
-            onNewClick = { navController.navigate(Screen.NewMeet.route) }
+            MeetActions(
+                onSelectMeet = { meetId -> navController.navigate(Screen.Gymnast(meetId).route) },
+                onNew = { navController.navigate(Screen.NewMeet.route) },
+            )
         )
     }
 }

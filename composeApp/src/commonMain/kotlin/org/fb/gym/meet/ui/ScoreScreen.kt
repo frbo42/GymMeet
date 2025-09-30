@@ -245,7 +245,7 @@ private fun ScoreRow(
     modifier: Modifier = Modifier
 ) {
     // Keep the text representation in sync with the Score value
-    var text = rememberSaveable(stateSaver = TextFieldValue.Saver) {
+    val text = rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(score.toString()))
     }
 

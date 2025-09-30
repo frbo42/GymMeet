@@ -18,15 +18,14 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun MeetScreen(
     meets: List<Meet> = listOf(Meet("1", "Meet 1", "2023-01-01")),
-    onClick: (String) -> Unit = {},
-    onNewClick: () -> Unit = {}
+    actions: MeetActions = MeetActions()
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Meets") },
                 actions = {
-                    IconButton(onClick = { onNewClick() }) {
+                    IconButton(onClick = { actions.onNew() }) {
                         Icon(
                             imageVector = Icons.Default.Add, contentDescription = "New"
                         )
@@ -43,7 +42,7 @@ fun MeetScreen(
             items(meets, key = { it.id }) { meet ->
                 MeetRow(
                     meet = meet,
-                    onClick = onClick
+                    onSelectMeet = actions.onSelectMeet
                 )
             }
         }
@@ -53,12 +52,12 @@ fun MeetScreen(
 @Composable
 private fun MeetRow(
     meet: Meet,
-    onClick: (String) -> Unit
+    onSelectMeet: (String) -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick(meet.id) },
+            .clickable { onSelectMeet(meet.id) },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
@@ -69,3 +68,8 @@ private fun MeetRow(
         }
     }
 }
+
+data class MeetActions(
+    val onSelectMeet: (String) -> Unit = {},
+    val onNew: () -> Unit = {}
+)
