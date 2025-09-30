@@ -12,9 +12,10 @@ import org.fb.gym.meet.data.ScoreCardId
 
 sealed class Screen(val route: String) {
     object Meet : Screen("meets")
-    object NewMeet : Screen("meets/new")
+    object CreateMeet : Screen("meets/create")
+    data class EditMeet(val meetId: String) : Screen("meets/edit/$meetId")
     data class Gymnast(val meetId: String) : Screen("gymnasts/meets/$meetId")
-    object GymnastCreate : Screen("gymnasts/create")
+    object CreateGymnast : Screen("gymnasts/create")
     data class Score(
         val meetId: String,
         val gymnastId: String
@@ -33,6 +34,7 @@ fun AppNavHost(
     ) {
         meetRoute(meetRepo, navController)
         createMeetRoute(meetRepo, gymnastRepo, navController)
+        editMeetRoute(meetRepo, gymnastRepo, navController)
         gymnastRoute(meetRepo, gymnastRepo, navController)
         scoreRoute(meetRepo, gymnastRepo, navController)
     }
@@ -48,7 +50,11 @@ private fun NavGraphBuilder.meetRoute(
             meets = vm.meets.collectAsState().value,
             MeetActions(
                 onSelectMeet = { meetId -> navController.navigate(Screen.Gymnast(meetId).route) },
-                onNew = { navController.navigate(Screen.NewMeet.route) },
+                onCreateMeet = {
+                    println("clicked create")
+                    navController.navigate(Screen.CreateMeet.route)
+                },
+                onEditMeet = { meetId -> navController.navigate(Screen.EditMeet(meetId).route) },
             )
         )
     }
@@ -59,7 +65,8 @@ private fun NavGraphBuilder.createMeetRoute(
     gymnastRepo: GymnastRepository,
     navController: NavHostController
 ) {
-    composable(Screen.NewMeet.route) {
+    composable(Screen.CreateMeet.route) {
+        println("createMeetRoute")
         val vm = CreateMeetViewModel(meetRepository, gymnastRepo)
         val uiState = vm.uiState.collectAsState()
         val actions = CreateMeetActions(
@@ -68,7 +75,7 @@ private fun NavGraphBuilder.createMeetRoute(
                 vm.onSave()
                 navController.popBackStack()
             },
-            onAddGymnast = { navController.navigate(Screen.GymnastCreate) }
+            onAddGymnast = { navController.navigate(Screen.CreateGymnast) }
         )
         CreateMeetScreen(
             state = uiState,
@@ -77,6 +84,16 @@ private fun NavGraphBuilder.createMeetRoute(
             onDateChanged = vm::onDateChanged,
             onGymnastToggle = vm::toggleGymnastSelection,
         )
+    }
+}
+
+private fun NavGraphBuilder.editMeetRoute(
+    meetRepo: MeetRepository,
+    gymnastRepo: GymnastRepository,
+    navController: NavHostController
+) {
+    composable(Screen.EditMeet("{meetId}").route) {
+        EditMeetScreen()
     }
 }
 
