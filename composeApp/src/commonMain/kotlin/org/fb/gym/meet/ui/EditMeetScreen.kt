@@ -8,6 +8,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -106,7 +107,8 @@ fun EditMeetScreen(
                 allGymnasts = state.value.allGymnasts,
                 selectedIds = state.value.selectedGymnastIds,
                 onToggle = onGymnastToggle,
-                onAddGymnast = actions.onAddGymnast,
+                onCreateGymnast = actions.onCreateGymnast,
+                onEditGymnast = actions.onEditGymnast,
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -118,7 +120,8 @@ fun GymnastMultiSelect(
     allGymnasts: List<Gymnast>,
     selectedIds: Set<String>,
     onToggle: (String) -> Unit,
-    onAddGymnast: (String?) -> Unit,
+    onCreateGymnast: () -> Unit,
+    onEditGymnast: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
@@ -131,7 +134,7 @@ fun GymnastMultiSelect(
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.weight(1f)
             )
-            TextButton(onClick = { onAddGymnast(null) }) {
+            TextButton(onClick = { onCreateGymnast() }) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = "Add Gymnast"
@@ -158,25 +161,47 @@ fun GymnastMultiSelect(
             modifier = Modifier.heightIn(max = 250.dp) // limit height, scroll if needed
         ) {
             items(allGymnasts, key = { it.id }) { gymnast ->
-                val isChecked = gymnast.id in selectedIds
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { onToggle(gymnast.id) }
-                        .padding(vertical = 4.dp, horizontal = 8.dp)
-                ) {
-                    Checkbox(
-                        checked = isChecked,
-                        onCheckedChange = { onToggle(gymnast.id) }
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    Text(
-                        text = "${gymnast.firstName} ${gymnast.lastName} (${gymnast.category})",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
+                GymnastRow(gymnast, selectedIds, onToggle, onEditGymnast)
             }
+        }
+    }
+}
+
+@Composable
+private fun GymnastRow(
+    gymnast: Gymnast,
+    selectedIds: Set<String>,
+    onToggle: (String) -> Unit,
+    onEditGymnast: (String) -> Unit
+) {
+    val isChecked = gymnast.id in selectedIds
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onToggle(gymnast.id) }
+            .padding(vertical = 4.dp, horizontal = 8.dp)
+    ) {
+        Checkbox(
+            checked = isChecked,
+            onCheckedChange = { onToggle(gymnast.id) }
+        )
+        Spacer(Modifier.width(8.dp))
+        Text(
+            text = "${gymnast.firstName} ${gymnast.lastName} (${gymnast.category})",
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.weight(1f)   // pushes the button to the end
+        )
+        // ---- Edit button ----
+        IconButton(
+            onClick = { onEditGymnast(gymnast.id) },
+            // Give the button a slightly larger hit‑area for accessibility
+            modifier = Modifier.size(36.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Edit,   // pencil icon
+                contentDescription = "Edit ${gymnast.firstName} ${gymnast.lastName}"
+            )
         }
     }
 }
@@ -197,7 +222,8 @@ data class EditMeetActions(
     /** Called when the user taps “Save”. */
     val onSave: () -> Unit = {},
     /** Called when the user wants to add a brand‑new gymnast (navigate). */
-    val onAddGymnast: (String?) -> Unit = {}
+    val onCreateGymnast: () -> Unit = {},
+    val onEditGymnast: (String) -> Unit = {}
 )
 
 @OptIn(ExperimentalTime::class)

@@ -80,7 +80,8 @@ private fun NavGraphBuilder.createMeetRoute(
                 vm.onSave()
                 navController.popBackStack()
             },
-            onAddGymnast = { navController.navigate(Screen.CreateGymnast.route) }
+            onCreateGymnast = { navController.navigate(Screen.CreateGymnast.route) },
+            onEditGymnast = { gymnastId -> navController.navigate(Screen.EditGymnast(gymnastId).route) }
         )
         EditMeetScreen(
             state = uiState,
@@ -113,7 +114,8 @@ private fun NavGraphBuilder.editMeetRoute(
                 vm.onSave()
                 navController.popBackStack()
             },
-            onAddGymnast = { navController.navigate(Screen.CreateGymnast.route) }
+            onCreateGymnast = { navController.navigate(Screen.CreateGymnast.route) },
+            onEditGymnast = { gymnastId -> navController.navigate(Screen.EditGymnast(gymnastId).route) }
         )
         EditMeetScreen(
             state = uiState,
