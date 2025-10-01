@@ -14,7 +14,8 @@ import kotlin.uuid.Uuid
 
 sealed class Screen(val route: String) {
     object Meet : Screen("meets")
-    data class EditMeet(val meetId: String?) : Screen("meets/edit/$meetId")
+    object CreateMeet : Screen("meets/create")
+    data class EditMeet(val meetId: String) : Screen("meets/edit/$meetId")
     data class Participant(val meetId: String) : Screen("meets/$meetId/participants")
     data class EditGymnast(val gymnastId: String?) : Screen("gymnasts/edit/$gymnastId")
     data class Score(
@@ -34,6 +35,7 @@ fun AppNavHost(
         startDestination = Screen.Meet.route
     ) {
         meetRoute(meetRepo, navController)
+        createMeetRoute(meetRepo, gymnastRepo, navController)
         editMeetRoute(meetRepo, gymnastRepo, navController)
         participantRoute(meetRepo, gymnastRepo, navController)
         scoreRoute(meetRepo, gymnastRepo, navController)
@@ -51,9 +53,39 @@ private fun NavGraphBuilder.meetRoute(
             meets = vm.meets.collectAsState().value,
             MeetActions(
                 onSelectMeet = { meetId -> navController.navigate(Screen.Participant(meetId).route) },
-                onCreateMeet = { navController.navigate(Screen.EditMeet(null).route) },
+                onCreateMeet = { navController.navigate(Screen.CreateMeet.route) },
                 onEditMeet = { meetId -> navController.navigate(Screen.EditMeet(meetId).route) },
             )
+        )
+    }
+}
+
+@OptIn(ExperimentalUuidApi::class)
+private fun NavGraphBuilder.createMeetRoute(
+    meetRepo: MeetRepository,
+    gymnastRepo: GymnastRepository,
+    navController: NavHostController
+) {
+    composable(Screen.CreateMeet.route) {
+        val vm = EditMeetViewModel(
+            meetRepo = meetRepo,
+            gymnastRepo = gymnastRepo
+        )
+        val uiState = vm.uiState.collectAsState()
+        val actions = EditMeetActions(
+            onBack = { navController.popBackStack() },
+            onSave = {
+                vm.onSave()
+                navController.popBackStack()
+            },
+            onAddGymnast = { gymnastId -> navController.navigate(Screen.EditGymnast(gymnastId).route) }
+        )
+        EditMeetScreen(
+            state = uiState,
+            actions = actions,
+            onNameChanged = vm::onNameChanged,
+            onDateChanged = vm::onDateChanged,
+            onGymnastToggle = vm::toggleGymnastSelection,
         )
     }
 }
