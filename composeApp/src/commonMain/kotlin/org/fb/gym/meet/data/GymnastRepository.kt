@@ -20,7 +20,14 @@ class GymnastRepository {
     }
 
     suspend fun saveGymnast(gymnast: Gymnast) {
-        // Append – duplicate‑id handling omitted for brevity
-        _gymnasts.value = _gymnasts.value + gymnast
+        // Replace if the id already exists, otherwise append
+        val updated = _gymnasts.value.toMutableList()
+        val idx = updated.indexOfFirst { it.id == gymnast.id }
+        if (idx >= 0) {
+            updated[idx] = gymnast
+        } else {
+            updated.add(gymnast)
+        }
+        _gymnasts.value = updated
     }
 }

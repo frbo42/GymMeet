@@ -37,6 +37,7 @@ fun AppNavHost(
         editMeetRoute(meetRepo, gymnastRepo, navController)
         participantRoute(meetRepo, gymnastRepo, navController)
         scoreRoute(meetRepo, gymnastRepo, navController)
+        editGymnastRoute(gymnastRepo, navController)
     }
 }
 
@@ -129,6 +130,21 @@ private fun NavGraphBuilder.scoreRoute(
             gymnastRepo.observeGymnast(gymnastId).collectAsState(null).value,
             ScoreViewModel(ScoreCardId(meetId, gymnastId), meetRepository),
             onBackClick = { navController.popBackStack() }
+        )
+    }
+}
+
+private fun NavGraphBuilder.editGymnastRoute(
+    gymnastRepo: GymnastRepository,
+    navController: NavHostController
+) {
+    composable(Screen.EditGymnast("{gymnastId}").route) { backStackEntry ->
+        val id = backStackEntry.savedStateHandle.get<String>("gymnastId")
+        EditGymnastScreen(
+            gymnastId = id,
+            vm = EditGymnastViewModel(gymnastRepo, id),
+            onBack = { navController.popBackStack() },
+            onSaved = { navController.popBackStack() }   // go back after save
         )
     }
 }
