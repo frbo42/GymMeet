@@ -175,33 +175,39 @@ private fun GymnastRow(
     onEditGymnast: (String) -> Unit
 ) {
     val isChecked = gymnast.id in selectedIds
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
+    Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onToggle(gymnast.id) }
-            .padding(vertical = 4.dp, horizontal = 8.dp)
+            .fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Checkbox(
-            checked = isChecked,
-            onCheckedChange = { onToggle(gymnast.id) }
-        )
-        Spacer(Modifier.width(8.dp))
-        Text(
-            text = "${gymnast.firstName} ${gymnast.lastName} (${gymnast.category})",
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.weight(1f)   // pushes the button to the end
-        )
-        // ---- Edit button ----
-        IconButton(
-            onClick = { onEditGymnast(gymnast.id) },
-            // Give the button a slightly larger hit‑area for accessibility
-            modifier = Modifier.size(36.dp)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onToggle(gymnast.id) }
+                .padding(vertical = 4.dp, horizontal = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = Icons.Default.Edit,   // pencil icon
-                contentDescription = "Edit ${gymnast.firstName} ${gymnast.lastName}"
+            Checkbox(
+                checked = isChecked,
+                onCheckedChange = { onToggle(gymnast.id) }
             )
+            Spacer(Modifier.width(8.dp))
+            Text(
+                text = "${gymnast.firstName} ${gymnast.lastName} (${gymnast.category})",
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.weight(1f)   // pushes the button to the end
+            )
+            // ---- Edit button ----
+            IconButton(
+                onClick = { onEditGymnast(gymnast.id) },
+                // Give the button a slightly larger hit‑area for accessibility
+                modifier = Modifier.size(36.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Edit,   // pencil icon
+                    contentDescription = "Edit ${gymnast.firstName} ${gymnast.lastName}"
+                )
+            }
         }
     }
 }
