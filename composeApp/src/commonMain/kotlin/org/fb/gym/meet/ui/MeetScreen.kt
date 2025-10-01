@@ -27,9 +27,9 @@ fun MeetScreen(
             TopAppBar(
                 title = { Text("Meets") },
                 actions = {
-                    IconButton(onClick = { actions.onCreateMeet() }) {
+                    IconButton(onClick = actions.onCreateMeet) {
                         Icon(
-                            imageVector = Icons.Default.Add, contentDescription = "New"
+                            imageVector = Icons.Default.Add, contentDescription = "Add"
                         )
                     }
                 }
