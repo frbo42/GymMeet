@@ -1,5 +1,6 @@
 package org.fb.gym.meet.data
 
+import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 import kotlin.math.pow
 import kotlin.math.round
@@ -9,6 +10,7 @@ data class ScoreCardId(
     val gymnastId: String
 )
 
+@Serializable
 data class ScoreCard(
     val floor: Score = Score(),
     val rings: Score = Score(),
@@ -17,12 +19,14 @@ data class ScoreCard(
     val bar: Score = Score()
 )
 
+@Serializable
 data class VaultScore(
     val firstJump: Score = Score(),
     val secondJump: Score = Score()
 )
 
 @JvmInline
+@Serializable
 value class Score(val value: Double = -1.0) {
     override fun toString(): String = value.format2()
 

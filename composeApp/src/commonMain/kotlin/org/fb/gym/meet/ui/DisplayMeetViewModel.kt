@@ -6,8 +6,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
-import org.fb.gym.meet.data.Meet
+import org.fb.gym.meet.data.MeetOverview
 import org.fb.gym.meet.data.MeetRepository
 
 class DisplayMeetViewModel(
@@ -16,18 +15,18 @@ class DisplayMeetViewModel(
 ) {
 
     /** Public stream of the current meet list. */
-    val meets: StateFlow<List<Meet>> = repository
+    val meets: StateFlow<List<MeetOverview>> = repository
         .observeMeets()
         .stateIn(
             scope = externalScope,
-            started = SharingStarted.Eagerly,
+            started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000), //SharingStarted.Eagerly,
             initialValue = emptyList()
         )
 
-    /** Optional – delete a meet */
-    fun deleteMeet(meetId: String) {
-        externalScope.launch {
-            repository.deleteMeet(meetId)
-        }
-    }
+//    /** Optional – delete a meet */
+//    fun deleteMeet(meetId: String) {
+//        externalScope.launch {
+//            repository.deleteMeet(meetId)
+//        }
+//    }
 }

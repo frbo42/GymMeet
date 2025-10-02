@@ -12,14 +12,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.fb.gym.meet.data.Meet
+import org.fb.gym.meet.data.MeetOverview
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun MeetScreen(
-    meets: List<Meet> = listOf(Meet("1", "Meet 1", "2023-01-01")),
+    meets: List<MeetOverview> = listOf(MeetOverview("1", "Meet 1", "2023-01-01")),
     actions: MeetActions = MeetActions()
 ) {
     Scaffold(
@@ -54,7 +54,7 @@ fun MeetScreen(
 
 @Composable
 private fun MeetRow(
-    meet: Meet,
+    meet: MeetOverview,
     onSelect: (String) -> Unit,
     onEdit: (String) -> Unit
 ) {

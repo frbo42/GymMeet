@@ -39,8 +39,8 @@ class EditMeetViewModel(
                 .collect { meet ->
                     _uiState.update {
                         it.copy(
-                            name = meet?.name ?: List(5) { ('a'..'z').random() }.joinToString(""),
-                            date = meet?.date ?: today(),
+                            name = meet?.overview?.name ?: List(5) { ('a'..'z').random() }.joinToString(""),
+                            date = meet?.overview?.date ?: today(),
                             selectedGymnastIds = meet?.participants?.map { it.gymnastId }?.toSet() ?: emptySet()
                         )
                     }
@@ -107,9 +107,11 @@ class EditMeetViewModel(
         val participants = selectedGymnasts.map { g -> Participant(g.id, ScoreCard()) }
 
         val meet = Meet(
-            id = meetId,
+            MeetOverview(
+                id = meetId,
             name = current.name.trim(),
-            date = current.date.trim(),
+                date = current.date.trim()
+            ),
             participants = participants
         )
 

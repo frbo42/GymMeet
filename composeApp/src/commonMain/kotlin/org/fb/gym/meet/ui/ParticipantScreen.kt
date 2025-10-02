@@ -26,7 +26,7 @@ fun ParticipantScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (meet == null) "No meet selected" else "Gymnasts: ${meet.name}") },
+                title = { Text(if (meet == null) "No meet selected" else "Gymnasts: ${meet.overview.name}") },
                 navigationIcon = {
                     IconButton(onClick = actions.onBack) {
                         Icon(
@@ -53,7 +53,7 @@ fun ParticipantScreen(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(vertical = 4.dp)
-                            .clickable { actions.onGymnastSelected(meet.id, gymnast.id) }
+                            .clickable { actions.onGymnastSelected(meet.overview.id, gymnast.id) }
                     ) {
                         Text(
                             text = gymnast.firstName + " " + gymnast.lastName,

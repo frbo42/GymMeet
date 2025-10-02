@@ -1,0 +1,86 @@
+CREATE TABLE meet (
+    id TEXT NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL,
+    date TEXT NOT NULL               -- store as ISO string (e.g., "2025-09-28")
+);
+
+CREATE TABLE participant (
+    meet_id TEXT NOT NULL REFERENCES meet(id) ON DELETE CASCADE,
+    gymnast_id TEXT NOT NULL,
+    score_card TEXT NOT NULL,        -- JSON representation of ScoreCard (or separate columns)
+    PRIMARY KEY (meet_id, gymnast_id)
+);
+
+CREATE TABLE gymnast (
+    id TEXT NOT NULL PRIMARY KEY,
+    first_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
+    gender TEXT NOT NULL,            -- "M" or "F"
+    category TEXT NOT NULL           -- "C1"…"C7"
+);
+
+-- Queries
+selectAll:
+SELECT * FROM meet
+ ORDER BY date;
+
+selectOverviews:
+SELECT * FROM meet
+ ORDER BY date;
+
+selectParticipantsByMeetId:
+SELECT * FROM participant
+WHERE participant.meet_id = ?
+ORDER BY gymnast_id
+;
+
+selectById:
+SELECT * FROM meet WHERE id = ?;
+
+-- insert:
+-- INSERT INTO meet(id, name, date)
+-- VALUES (?, ?, ?);
+
+
+upsert:
+INSERT INTO meet(id, name, date)
+VALUES (?, ?, ?)
+ON CONFLICT(id) DO UPDATE SET
+    name = excluded.name,
+    date = excluded.date;
+
+-- upsertParticipant:
+-- INSERT INTO participant(meet_id, gymnast_id, score_card)
+-- VALUES (?, ?, ?)
+-- ON CONFLICT(meet_id, gymnast_id) DO UPDATE SET
+--     score_card = excluded.score_card;
+
+insertParticipant:
+INSERT INTO participant(meet_id, gymnast_id, score_card)
+VALUES (?, ?, ?);
+
+deleteParticipantsByMeetId:
+DELETE FROM participant
+WHERE meet_id = ?;
+
+selectScoreCardByMeetIdGymnastId:
+SELECT score_card FROM participant
+WHERE meet_id = ? AND gymnast_id = ?;
+
+updateScoreCard:
+UPDATE participant
+SET score_card = ?
+WHERE meet_id = ? AND gymnast_id = ?;
+
+-- deleteParticipant:
+-- DELETE FROM participant
+-- WHERE meet_id = ? AND gymnast_id = ?;
+
+
+-- update:
+-- UPDATE meet
+-- SET name = ?, date = ?, location = ?
+-- WHERE id = ?;
+
+-- deleteById:
+-- DELETE FROM meet WHERE id = ?;

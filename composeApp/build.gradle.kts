@@ -4,10 +4,12 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.kotlinxSerialization)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    alias(libs.plugins.sql)
 }
 
 kotlin {
@@ -34,6 +36,7 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.sqlAndroidDriver)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -47,6 +50,9 @@ kotlin {
             implementation(libs.composeNavigation)
             implementation(libs.materialIcons)
             implementation(libs.kotlinxDateTime)
+            implementation(libs.kotlinxSerializationJson)
+            implementation(libs.sqlRuntime)
+            implementation(libs.sqlCoroutines)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -54,6 +60,23 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
+            implementation(libs.sqlJvmDriver)
+        }
+        wasmJsMain.dependencies {
+            implementation(libs.sqlWasmDriver)
+        }
+        jsMain.dependencies {
+            implementation(libs.sqlJsDriver)
+        }
+    }
+}
+
+sqldelight {
+    databases {
+        create("AppDatabase") {
+            packageName.set("org.fb.gym.meet.db")
+            // The .sq files will be placed under src/commonMain/sqldelight/org/fb/gym/meet/db
+            dialect("app.cash.sqldelight:sqlite-3-24-dialect:2.1.0")
         }
     }
 }

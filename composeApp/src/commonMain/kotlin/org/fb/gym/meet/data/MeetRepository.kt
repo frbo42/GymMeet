@@ -1,46 +1,141 @@
 package org.fb.gym.meet.data
 
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
+import app.cash.sqldelight.coroutines.mapToOneOrNull
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.*
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import org.fb.gym.meet.db.AppDatabase
 
-class MeetRepository {
+class MeetRepository(
+    private val db: AppDatabase,
+    private val scope: CoroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+) {
 
-    // Internal mutable list that backs the public flow
-    private val _meets = MutableStateFlow<List<Meet>>(emptyList())
-    fun observeMeets(): Flow<List<Meet>> = _meets.asStateFlow()
 
-    suspend fun saveMeet(meet: Meet) {
-        // Replace an existing meet with the same id, otherwise append
-        val updated = _meets.value.toMutableList()
-        val index = updated.indexOfFirst { it.id == meet.id }
-        if (index >= 0) {
-            updated[index] = meet
-        } else {
-            updated.add(meet)
-        }
-        _meets.value = updated
+    var count: Int = 0
+    private val _meets: StateFlow<List<MeetOverview>> = db.meetQueries.selectAll()
+        .asFlow()
+        .mapToList(Dispatchers.Default)
+        .map { it.toOverviews() }
+        .distinctUntilChanged()
+        .stateIn(
+            scope = scope,
+            started = SharingStarted.Eagerly,   // start listening as soon as the repo is created
+            initialValue = emptyList()
+        )
+
+    fun observeMeets(): Flow<List<MeetOverview>> = _meets
+//    {
+//        println("observe $count")
+//        count++
+//        return db.meetQueries.selectOverviews()
+//            .asFlow()
+//            .mapToList(Dispatchers.Default)
+//            .map { dbMeets -> dbMeets.toOverviews() }
+//            .distinctUntilChanged ()
+//    }
+
+    private fun List<org.fb.gym.meet.db.Meet>.toOverviews(): List<MeetOverview> {
+        return this.map { it.toOverview() }
     }
 
-    suspend fun deleteMeet(meetId: String) {
-        _meets.value = _meets.value.filterNot { it.id == meetId }
+    private fun List<org.fb.gym.meet.db.Meet>.toMeets(): List<Meet> {
+        return this.map { meet ->
+            val participants: List<Participant> = selectParticipantsByMeetId(meet.id)
+            meet.toMeet(participants)
+        }
+    }
+
+    private fun selectParticipantsByMeetId(meetId: String): List<Participant> =
+        db.meetQueries.selectParticipantsByMeetId(meetId)
+            .executeAsList()
+            .map { participant -> participant.toParticipant() }
+            .sortedBy { it.gymnastId }
+
+    private fun org.fb.gym.meet.db.Participant.toParticipant(): Participant {
+        return Participant(
+            this.gymnast_id,
+            this.score_card.toScoreCard()
+        )
+    }
+
+    private fun org.fb.gym.meet.db.Meet.toOverview(): MeetOverview {
+        return MeetOverview(
+            id = id,
+            name = name,
+            date = date
+        )
+    }
+
+    private fun org.fb.gym.meet.db.Meet.toMeet(participants: List<Participant>): Meet {
+        return Meet(
+            MeetOverview(
+                id = id,
+                name = name,
+                date = date
+            ),
+            participants = participants
+        )
+    }
+
+    private fun ScoreCard.toJson(): String =
+        Json.encodeToString(this)
+
+    private fun String.toScoreCard(): ScoreCard =
+        Json.decodeFromString(this)
+
+    suspend fun saveMeet(meet: Meet) {
+        db.transaction {
+            db.meetQueries.upsert(
+                meet.overview.id,
+                meet.overview.name,
+                meet.overview.date,
+            )
+
+            // Delete all existing participants for this meet
+            db.meetQueries.deleteParticipantsByMeetId(meet.overview.id)
+
+            // Insert all current participants
+            meet.participants.forEach { participant ->
+                db.meetQueries.insertParticipant(
+                    meet_id = meet.overview.id,
+                    gymnast_id = participant.gymnastId,
+                    score_card = participant.scoreCard.toJson()
+                )
+            }
+        }
     }
 
     fun observeMeet(meetId: String): Flow<Meet?> {
-        return _meets.map { meets -> meets.find { it.id == meetId } }
+        return db.meetQueries.selectById(meetId)
+            .asFlow()
+            .mapToOneOrNull(Dispatchers.Default)
+            .map {
+                if (it != null) {
+                    selectParticipantsByMeetId(it.id)
+                    it.toMeet(emptyList())
+                } else null
+            }
     }
 
-    private val storage = mutableMapOf<ScoreCardId, MutableStateFlow<ScoreCard>>()
-
     fun observeScoreCard(scoreCardId: ScoreCardId): Flow<ScoreCard?> {
-        return _meets
-            .map { meets -> meets.find { it.id == scoreCardId.meetId } }
-            .map { meet -> meet?.participants?.find { it.gymnastId == scoreCardId.gymnastId } }
-            .map { participant -> participant?.scoreCard }
-            .distinctUntilChanged()
+        return db.meetQueries.selectScoreCardByMeetIdGymnastId(scoreCardId.meetId, scoreCardId.gymnastId)
+            .asFlow()
+            .mapToOneOrNull(Dispatchers.Default)
+            .map {
+                if (it != null) {
+                    it.toScoreCard()
+                } else null
+            }
     }
 
     suspend fun saveScoreCard(scoreCardId: ScoreCardId, scoreCard: ScoreCard) {
-        val flow = storage.getOrPut(scoreCardId) { MutableStateFlow(ScoreCard()) }
-        flow.value = scoreCard
-        println("saved scoreCard: $scoreCardId - $scoreCard")
+        db.meetQueries.updateScoreCard(scoreCard.toJson(), scoreCardId.meetId, scoreCardId.gymnastId)
     }
+
 }
