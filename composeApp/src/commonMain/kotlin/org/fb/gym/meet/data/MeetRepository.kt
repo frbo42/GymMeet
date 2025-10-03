@@ -16,8 +16,6 @@ class MeetRepository(
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 ) {
 
-
-    var count: Int = 0
     private val _meets: StateFlow<List<MeetOverview>> = db.meetQueries.selectAll()
         .asFlow()
         .mapToList(Dispatchers.Default)
@@ -30,25 +28,10 @@ class MeetRepository(
         )
 
     fun observeMeets(): Flow<List<MeetOverview>> = _meets
-//    {
-//        println("observe $count")
-//        count++
-//        return db.meetQueries.selectOverviews()
-//            .asFlow()
-//            .mapToList(Dispatchers.Default)
-//            .map { dbMeets -> dbMeets.toOverviews() }
-//            .distinctUntilChanged ()
-//    }
+
 
     private fun List<org.fb.gym.meet.db.Meet>.toOverviews(): List<MeetOverview> {
         return this.map { it.toOverview() }
-    }
-
-    private fun List<org.fb.gym.meet.db.Meet>.toMeets(): List<Meet> {
-        return this.map { meet ->
-            val participants: List<Participant> = selectParticipantsByMeetId(meet.id)
-            meet.toMeet(participants)
-        }
     }
 
     private fun selectParticipantsByMeetId(meetId: String): List<Participant> =
@@ -89,7 +72,7 @@ class MeetRepository(
     private fun String.toScoreCard(): ScoreCard =
         Json.decodeFromString(this)
 
-    suspend fun saveMeet(meet: Meet) {
+    fun saveMeet(meet: Meet) {
         db.transaction {
             db.meetQueries.upsert(
                 meet.overview.id,
@@ -117,8 +100,8 @@ class MeetRepository(
             .mapToOneOrNull(Dispatchers.Default)
             .map {
                 if (it != null) {
-                    selectParticipantsByMeetId(it.id)
-                    it.toMeet(emptyList())
+                    val participants = selectParticipantsByMeetId(it.id)
+                    it.toMeet(participants)
                 } else null
             }
     }
@@ -128,13 +111,11 @@ class MeetRepository(
             .asFlow()
             .mapToOneOrNull(Dispatchers.Default)
             .map {
-                if (it != null) {
-                    it.toScoreCard()
-                } else null
+                it?.toScoreCard()
             }
     }
 
-    suspend fun saveScoreCard(scoreCardId: ScoreCardId, scoreCard: ScoreCard) {
+    fun saveScoreCard(scoreCardId: ScoreCardId, scoreCard: ScoreCard) {
         db.meetQueries.updateScoreCard(scoreCard.toJson(), scoreCardId.meetId, scoreCardId.gymnastId)
     }
 
