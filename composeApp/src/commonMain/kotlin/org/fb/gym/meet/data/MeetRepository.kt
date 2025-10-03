@@ -55,7 +55,8 @@ class MeetRepository(
         )
     }
 
-    private fun org.fb.gym.meet.db.Meet.toMeet(participants: List<Participant>): Meet {
+    private fun org.fb.gym.meet.db.Meet.toMeet(): Meet {
+        val participants = selectParticipantsByMeetId(this.id)
         return Meet(
             MeetOverview(
                 id = id,
@@ -95,25 +96,17 @@ class MeetRepository(
     }
 
     fun observeMeet(meetId: String): Flow<Meet?> {
-        // todo frbo check out the mapper as second parameter
         return db.meetQueries.selectMeetById(meetId)
             .asFlow()
             .mapToOneOrNull(Dispatchers.Default)
-            .map {
-                if (it != null) {
-                    val participants = selectParticipantsByMeetId(it.id)
-                    it.toMeet(participants)
-                } else null
-            }
+            .map { it?.toMeet() }
     }
 
     fun observeScoreCard(scoreCardId: ScoreCardId): Flow<ScoreCard?> {
         return db.meetQueries.selectScoreCardByMeetIdGymnastId(scoreCardId.meetId, scoreCardId.gymnastId)
             .asFlow()
             .mapToOneOrNull(Dispatchers.Default)
-            .map {
-                it?.toScoreCard()
-            }
+            .map { it?.toScoreCard() }
     }
 
     fun saveScoreCard(scoreCardId: ScoreCardId, scoreCard: ScoreCard) {
