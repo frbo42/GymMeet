@@ -17,8 +17,9 @@ fun App(
     navController: NavHostController = rememberNavController()
 ) {
     MaterialTheme {
-        val meetRepo = MeetRepository(db())
-        val gymnastRepo = GymnastRepository()
+        val db = db()
+        val meetRepo = MeetRepository(db)
+        val gymnastRepo = GymnastRepository(db)
         //        Screen.valueOf(
 //            backStackEntry?.destination?.route ?: Screen.Meet.name
 //        )

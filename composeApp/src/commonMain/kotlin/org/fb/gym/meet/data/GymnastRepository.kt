@@ -1,33 +1,59 @@
 package org.fb.gym.meet.data
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
+import app.cash.sqldelight.coroutines.mapToOneOrNull
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.*
+import org.fb.gym.meet.db.AppDatabase
 
-class GymnastRepository {
-    private val _gymnasts = MutableStateFlow<List<Gymnast>>(
-        listOf(
-            Gymnast("g-11", "Marie", "May", Category.C7),
-            Gymnast("g-22", "Markus", "Huber", Category.C3),
+class GymnastRepository(
+    private val db: AppDatabase,
+    private val scope: CoroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+) {
+    private val _gymnasts: StateFlow<List<Gymnast>> = db.meetQueries.selectGymnasts()
+        .asFlow()
+        .mapToList(Dispatchers.Default)
+        .map { it.toGymnasts() }
+        .distinctUntilChanged()
+        .stateIn(
+            scope = scope,
+            started = SharingStarted.Eagerly,
+            initialValue = emptyList()
         )
-    )
 
-    fun observeGymnasts(): Flow<List<Gymnast>> = _gymnasts.asStateFlow()
+    fun observeGymnasts(): Flow<List<Gymnast>> = _gymnasts
 
     fun observeGymnast(gymnastId: String): Flow<Gymnast?> {
-        return _gymnasts.map { gymnasts -> gymnasts.find { it.id == gymnastId } }
+        return db.meetQueries.selectGymnastById(gymnastId)
+            .asFlow()
+            .mapToOneOrNull(Dispatchers.Default)
+            .map { it?.toGymnast() }
     }
 
-    suspend fun saveGymnast(gymnast: Gymnast) {
-        // Replace if the id already exists, otherwise append
-        val updated = _gymnasts.value.toMutableList()
-        val idx = updated.indexOfFirst { it.id == gymnast.id }
-        if (idx >= 0) {
-            updated[idx] = gymnast
-        } else {
-            updated.add(gymnast)
-        }
-        _gymnasts.value = updated
+    fun saveGymnast(gymnast: Gymnast) {
+        db.meetQueries.upsertGymnast(
+            gymnast.id,
+            gymnast.firstName,
+            gymnast.lastName,
+            gymnast.gender.name,
+            gymnast.category.name,
+        )
     }
+}
+
+private fun List<org.fb.gym.meet.db.Gymnast>.toGymnasts(): List<Gymnast> {
+    return this.map { gymnast -> gymnast.toGymnast() }
+}
+
+private fun org.fb.gym.meet.db.Gymnast.toGymnast(): Gymnast {
+    return Gymnast(
+        this.id,
+        this.first_name,
+        this.last_name,
+        Category.valueOf(this.category),
+        Gender.valueOf(this.gender)
+    )
 }

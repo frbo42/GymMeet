@@ -20,9 +20,6 @@ CREATE TABLE gymnast (
 );
 
 -- Queries
-selectAll:
-SELECT * FROM meet
- ORDER BY date;
 
 selectOverviews:
 SELECT * FROM meet
@@ -34,26 +31,15 @@ WHERE participant.meet_id = ?
 ORDER BY gymnast_id
 ;
 
-selectById:
+selectMeetById:
 SELECT * FROM meet WHERE id = ?;
 
--- insert:
--- INSERT INTO meet(id, name, date)
--- VALUES (?, ?, ?);
-
-
-upsert:
+upsertOverview:
 INSERT INTO meet(id, name, date)
 VALUES (?, ?, ?)
 ON CONFLICT(id) DO UPDATE SET
     name = excluded.name,
     date = excluded.date;
-
--- upsertParticipant:
--- INSERT INTO participant(meet_id, gymnast_id, score_card)
--- VALUES (?, ?, ?)
--- ON CONFLICT(meet_id, gymnast_id) DO UPDATE SET
---     score_card = excluded.score_card;
 
 insertParticipant:
 INSERT INTO participant(meet_id, gymnast_id, score_card)
@@ -72,15 +58,20 @@ UPDATE participant
 SET score_card = ?
 WHERE meet_id = ? AND gymnast_id = ?;
 
--- deleteParticipant:
--- DELETE FROM participant
--- WHERE meet_id = ? AND gymnast_id = ?;
+selectGymnasts:
+SELECT * FROM gymnast
+ ORDER BY last_name;
 
+selectGymnastById:
+SELECT * FROM gymnast
+ WHERE id = ?;
 
--- update:
--- UPDATE meet
--- SET name = ?, date = ?, location = ?
--- WHERE id = ?;
-
--- deleteById:
--- DELETE FROM meet WHERE id = ?;
+upsertGymnast:
+INSERT INTO gymnast(id, first_name, last_name,gender, category)
+VALUES (?, ?, ?, ?,?)
+ON CONFLICT(id) DO UPDATE SET
+    first_name = excluded.first_name,
+    last_name = excluded.last_name,
+    gender = excluded.gender,
+    category = excluded.category
+    ;

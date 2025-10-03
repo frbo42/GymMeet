@@ -16,7 +16,7 @@ class MeetRepository(
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 ) {
 
-    private val _meets: StateFlow<List<MeetOverview>> = db.meetQueries.selectAll()
+    private val _meets: StateFlow<List<MeetOverview>> = db.meetQueries.selectOverviews()
         .asFlow()
         .mapToList(Dispatchers.Default)
         .map { it.toOverviews() }
@@ -74,7 +74,7 @@ class MeetRepository(
 
     fun saveMeet(meet: Meet) {
         db.transaction {
-            db.meetQueries.upsert(
+            db.meetQueries.upsertOverview(
                 meet.overview.id,
                 meet.overview.name,
                 meet.overview.date,
@@ -95,7 +95,8 @@ class MeetRepository(
     }
 
     fun observeMeet(meetId: String): Flow<Meet?> {
-        return db.meetQueries.selectById(meetId)
+        // todo frbo check out the mapper as second parameter
+        return db.meetQueries.selectMeetById(meetId)
             .asFlow()
             .mapToOneOrNull(Dispatchers.Default)
             .map {
@@ -118,5 +119,4 @@ class MeetRepository(
     fun saveScoreCard(scoreCardId: ScoreCardId, scoreCard: ScoreCard) {
         db.meetQueries.updateScoreCard(scoreCard.toJson(), scoreCardId.meetId, scoreCardId.gymnastId)
     }
-
 }
