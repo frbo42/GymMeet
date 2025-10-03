@@ -17,16 +17,17 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import org.fb.gym.meet.data.*
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.fb.gym.meet.data.Gymnast
+import org.fb.gym.meet.data.Score
+import org.fb.gym.meet.data.ScoreCard
+import org.fb.gym.meet.data.VaultScore
+
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
 fun ScoreScreen(
-    gymnast: Gymnast? = Gymnast("1", "Olivier", "Bommeli", Category.C5),
-    viewModel: ScoreViewModel = viewModel(),
+    gymnast: Gymnast? = Gymnast(),
+    viewModel: ScoreViewModel,
     onBackClick: () -> Unit = {},
 ) {
     // Keep a mutable copy locally – this is the source of truth for the UI
