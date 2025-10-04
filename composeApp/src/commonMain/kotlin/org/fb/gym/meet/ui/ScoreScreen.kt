@@ -59,7 +59,7 @@ fun ScoreScreen(
         } else {
             ScoreCardContent(
                 innerPadding,
-                gymnast!!,
+                gymnast,
                 scoreCard!!,
                 viewModel
             )
@@ -143,58 +143,68 @@ private fun VaultRow(
         secondJumpText = TextFieldValue(vault.secondJump.toString())
     }
 
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp)
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Icon(
-            imageVector = Icons.Default.ArrowUpward, // any vault‑related icon you like
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(28.dp)
-        )
-        Spacer(Modifier.width(12.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 8.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowUpward,
+                contentDescription = "Vault icon",
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(Modifier.width(12.dp))
 
-        Text(
-            text = "Vault",
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.weight(1f)
-        )
+            Text(
+                text = "Vault",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.weight(1f)
+            )
 
-        // first field
-        TextField(
-            value = firstJumpText,
-            onValueChange = {
-                if (it.text.matches(Regex("^\\d*(\\.\\d{0,2})?\$"))) {
-                    firstJumpText = it
-                    val parsed = it.text.toDoubleOrNull()
-                    onVaultChanged(vault.copy(firstJump = Score(parsed ?: 0.0)))
-                }
-            },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal),
-            singleLine = true,
-            placeholder = { Text("1.") },
-            modifier = Modifier.width(70.dp)
-        )
-        Spacer(Modifier.width(8.dp))
+            // first field
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(end = 8.dp)
+            ) {
+                OutlinedTextField(
+                    value = firstJumpText,
+                    onValueChange = {
+                        if (it.text.matches(Regex("^\\d{0,2}(\\.\\d{0,2})?\$"))) {
+                            firstJumpText = it
+                            onVaultChanged(vault.copy(firstJump = Score(it.text.toDoubleOrNull() ?: 0.0)))
+                        }
+                    },
+                    label = { Text("1st") },
+                    placeholder = { Text("0.00") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                    singleLine = true,
+                    modifier = Modifier.widthIn(min = 88.dp)
+                )
 
-        // second field
-        TextField(
-            value = secondJumpText,
-            onValueChange = {
-                if (it.text.matches(Regex("^\\d*(\\.\\d{0,2})?\$"))) {
-                    secondJumpText = it
-                    val parsed = it.text.toDoubleOrNull()
-                    onVaultChanged(vault.copy(secondJump = Score(parsed ?: 0.0)))
-                }
-            },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal),
-            singleLine = true,
-            placeholder = { Text("2.") },
-            modifier = Modifier.width(70.dp)
-        )
+                Spacer(Modifier.width(8.dp))
+
+                OutlinedTextField(
+                    value = secondJumpText,
+                    onValueChange = {
+                        if (it.text.matches(Regex("^\\d{0,2}(\\.\\d{0,2})?\$"))) {
+                            secondJumpText = it
+                            onVaultChanged(vault.copy(secondJump = Score(it.text.toDoubleOrNull() ?: 0.0)))
+                        }
+                    },
+                    label = { Text("2nd") },
+                    placeholder = { Text("0.00") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                    singleLine = true,
+                    modifier = Modifier.widthIn(min = 88.dp)
+                )
+            }
+        }
     }
 }
 
@@ -260,42 +270,77 @@ private fun ScoreRow(
     LaunchedEffect(score) {
         text.value = TextFieldValue(score.toString())
     }
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp)
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(28.dp)
-        )
-        Spacer(Modifier.width(12.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = "$label icon",
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .size(24.dp)
+                    .padding(start = 12.dp)
+            )
+            Spacer(Modifier.width(12.dp))
 
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.weight(1f)
-        )
+            Text(
+                text = label,
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(vertical = 12.dp)
+            )
 
-        // The numeric input – restrict to digits & dot
-        TextField(
-            value = text.value,
-            onValueChange = { newValue ->
-                // Allow only numbers, dot and up to 2 decimals (or empty)
-                val accept = newValue.text.matches(Regex("^\\d*(\\.\\d{0,2})?$"))
-                if (accept) {
-                    text.value = newValue
-                    val parsed = newValue.text.toDoubleOrNull()
-                    onScoreChanged(Score(parsed ?: 0.0))
-                }
-            },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal),
-            singleLine = true,
-            modifier = Modifier.width(80.dp)
-        )
+            ScoreField(
+                text = text,
+                onScoreChanged = { onScoreChanged },
+                label = label
+            )
+        }
     }
+}
+
+
+@Composable
+private fun ScoreField(
+    text: MutableState<TextFieldValue>,
+    onScoreChanged: (Score) -> Unit,
+    label: String
+) {
+    OutlinedTextField(
+        value = text.value,
+        onValueChange = { newValue ->
+            val accept = newValue.text.matches(Regex("^\\d{0,2}(\\.\\d{0,2})?$"))
+            if (accept) {
+                text.value = newValue
+                val parsed = newValue.text.toDoubleOrNull()
+                onScoreChanged(Score(parsed ?: 0.0))
+            }
+        },
+        label = { Text("Score") },
+        placeholder = { Text("0.00") },
+//                supportingText = { Text("0–10, max 2 decimals") },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Decimal
+        ),
+        singleLine = true,
+        trailingIcon = {
+            if (text.value.text.isNotEmpty()) {
+                IconButton(onClick = {
+                    text.value = TextFieldValue("")
+                    onScoreChanged(Score(0.0))
+                }) {
+                    Icon(Icons.Filled.Clear, contentDescription = "Clear $label score")
+                }
+            }
+        },
+        modifier = Modifier
+            .widthIn(min = 96.dp)
+            .padding(end = 12.dp)
+    )
 }
