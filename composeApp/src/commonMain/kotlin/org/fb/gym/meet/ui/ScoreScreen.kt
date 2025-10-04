@@ -173,7 +173,7 @@ private fun VaultRow(
                 modifier = Modifier.padding(end = 8.dp)
             ) {
 
-                ScoreField(
+                ScoreInput(
                     text = remember { mutableStateOf(firstJumpText) },
                     onScoreChanged = { score ->
                         firstJumpText = TextFieldValue(score.toString())
@@ -184,7 +184,7 @@ private fun VaultRow(
 
                 Spacer(Modifier.width(8.dp))
 
-                ScoreField(
+                ScoreInput(
                     text = remember { mutableStateOf(secondJumpText) },
                     onScoreChanged = { score ->
                         secondJumpText = TextFieldValue(score.toString())
@@ -285,7 +285,7 @@ private fun ScoreRow(
                     .padding(vertical = 12.dp)
             )
 
-            ScoreField(
+            ScoreInput(
                 text = text,
                 onScoreChanged = { onScoreChanged },
                 label = label
@@ -296,13 +296,14 @@ private fun ScoreRow(
 
 
 @Composable
-private fun ScoreField(
+private fun ScoreInput(
     text: MutableState<TextFieldValue>,
     onScoreChanged: (Score) -> Unit,
     label: String
 ) {
     OutlinedTextField(
         value = text.value,
+
         onValueChange = { newValue ->
             val accept = newValue.text.matches(Regex("^\\d{0,2}(\\.\\d{0,2})?$"))
             if (accept) {
