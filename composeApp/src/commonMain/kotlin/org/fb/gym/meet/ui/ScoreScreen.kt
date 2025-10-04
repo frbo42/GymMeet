@@ -287,7 +287,7 @@ private fun ScoreRow(
 
             ScoreInput(
                 text = text,
-                onScoreChanged = { onScoreChanged },
+                onScoreChanged = onScoreChanged,
                 label = label
             )
         }
