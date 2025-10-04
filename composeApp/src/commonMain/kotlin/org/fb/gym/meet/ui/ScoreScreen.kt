@@ -47,7 +47,7 @@ fun ScoreScreen(
             )
         }
     ) { innerPadding ->
-        if (scoreCard == null && gymnast != null) {
+        if (scoreCard == null || gymnast == null) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -175,7 +175,7 @@ private fun VaultRow(
             },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal),
             singleLine = true,
-            placeholder = { Text("First") },
+            placeholder = { Text("1.") },
             modifier = Modifier.width(70.dp)
         )
         Spacer(Modifier.width(8.dp))
@@ -192,7 +192,7 @@ private fun VaultRow(
             },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal),
             singleLine = true,
-            placeholder = { Text("Second") },
+            placeholder = { Text("2.") },
             modifier = Modifier.width(70.dp)
         )
     }
