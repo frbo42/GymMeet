@@ -271,7 +271,7 @@ private fun ScoreRow(
         text.value = TextFieldValue(score.toString())
     }
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
