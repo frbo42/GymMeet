@@ -14,20 +14,18 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import org.fb.gym.meet.data.Gymnast
-import org.fb.gym.meet.data.Score
-import org.fb.gym.meet.data.ScoreCard
-import org.fb.gym.meet.data.VaultScore
+import org.fb.gym.meet.data.*
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScoreScreen(
     gymnast: Gymnast? = Gymnast(),
-    viewModel: ScoreViewModel,
+    viewModel: ScoreContract,
     onBackClick: () -> Unit = {},
 ) {
     // Keep a mutable copy locally – this is the source of truth for the UI
@@ -49,7 +47,7 @@ fun ScoreScreen(
             )
         }
     ) { innerPadding ->
-        if (scoreCard == null) {
+        if (scoreCard == null && gymnast != null) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -61,6 +59,7 @@ fun ScoreScreen(
         } else {
             ScoreCardContent(
                 innerPadding,
+                gymnast!!,
                 scoreCard!!,
                 viewModel
             )
@@ -69,7 +68,12 @@ fun ScoreScreen(
 }
 
 @Composable
-private fun ScoreCardContent(innerPadding: PaddingValues, scoreCard: ScoreCard, viewModel: ScoreViewModel) {
+private fun ScoreCardContent(
+    innerPadding: PaddingValues,
+    gymnast: Gymnast,
+    scoreCard: ScoreCard,
+    viewModel: ScoreContract
+) {
     fun updateCard(updated: ScoreCard) = viewModel.updateScoreCard(updated)
     Column(
         modifier = Modifier
@@ -101,13 +105,15 @@ private fun ScoreCardContent(innerPadding: PaddingValues, scoreCard: ScoreCard, 
         )
 
         // ----- PARALLEL BARS --------------------------------------------
-        ScoreRow(
-            icon = Icons.Default.SportsGymnastics, // replace with parallel‑bars icon
-            label = "Parallel Bars",
-            score = scoreCard.parallel,
-            onScoreChanged = { updateCard(scoreCard.copy(parallel = it)) }
-        )
-
+        if (gymnast.gender == Gender.M) {
+            ScoreRow(
+                icon = Icons.Default.SportsGymnastics, // replace with parallel‑bars icon
+                label = "Parallel Bars",
+                score = scoreCard.parallel,
+                onScoreChanged = { updateCard(scoreCard.copy(parallel = it)) },
+                modifier = Modifier.testTag("parallelBarRow"),
+            )
+        }
         // ----- HORIZONTAL BAR -------------------------------------------
         ScoreRow(
             icon = Icons.Default.Sports, // replace with horizontal‑bar icon

@@ -1,5 +1,7 @@
+@file:OptIn(ExperimentalComposeLibrary::class)
+
+import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -26,7 +28,6 @@ kotlin {
         binaries.executable()
     }
     
-    @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         browser()
         binaries.executable()
@@ -54,14 +55,23 @@ kotlin {
             implementation(libs.sqlRuntime)
             implementation(libs.sqlCoroutines)
         }
-        commonTest.dependencies {
-            implementation(libs.kotlin.test)
-        }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
             implementation(libs.sqlJvmDriver)
         }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+            implementation(compose.uiTest)
+        }
+        jvmTest.dependencies {
+//            www.jetbrains.com/help/kotlin-multiplatform-dev/compose-test.html#qwvm1x_56
+//            implementation(libs.junit)
+//            implementation(compose.desktop.uiTestJUnit4)
+//            implementation(libs.kotlin.testJunit)
+            implementation(compose.desktop.currentOs)
+        }
+
         wasmJsMain.dependencies {
             implementation(libs.sqlWasmDriver)
         }

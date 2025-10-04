@@ -12,20 +12,29 @@ import org.fb.gym.meet.data.MeetRepository
 import org.fb.gym.meet.data.ScoreCard
 import org.fb.gym.meet.data.ScoreCardId
 
+
 /**
  * A lightweight, platform‑neutral ViewModel.
  *
  * - `scoreCardId` uniquely identifies the gymnast whose scores we edit.
  * - `repository` is injected (DI‑friendly) – you can pass a real DB impl later.
  */
+
+interface ScoreContract {
+    val scoreCard: StateFlow<ScoreCard?>
+
+    /** Called by the UI whenever a field changes. */
+    fun updateScoreCard(updated: ScoreCard)
+}
+
 class ScoreViewModel(
     private val scoreCardId: ScoreCardId,
     private val repository: MeetRepository,
     private val externalScope: CoroutineScope = CoroutineScope(Dispatchers.Main + Job())
-) {
+) : ScoreContract {
 
     /** Public read‑only stream of the current ScoreCard. */
-    val scoreCard: StateFlow<ScoreCard?> = repository
+    override val scoreCard: StateFlow<ScoreCard?> = repository
         .observeScoreCard(scoreCardId)
         .stateIn(
             scope = externalScope,
@@ -34,7 +43,7 @@ class ScoreViewModel(
         )
 
     /** Called by the UI whenever the user edits any field. */
-    fun updateScoreCard(updated: ScoreCard) {
+    override fun updateScoreCard(updated: ScoreCard) {
         // Fire‑and‑forget – repository decides whether to write to disk, network, etc.
         externalScope.launch {
             repository.saveScoreCard(scoreCardId, updated)
