@@ -172,36 +172,25 @@ private fun VaultRow(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(end = 8.dp)
             ) {
-                OutlinedTextField(
-                    value = firstJumpText,
-                    onValueChange = {
-                        if (it.text.matches(Regex("^\\d{0,2}(\\.\\d{0,2})?\$"))) {
-                            firstJumpText = it
-                            onVaultChanged(vault.copy(firstJump = Score(it.text.toDoubleOrNull() ?: 0.0)))
-                        }
+
+                ScoreField(
+                    text = remember { mutableStateOf(firstJumpText) },
+                    onScoreChanged = { score ->
+                        firstJumpText = TextFieldValue(score.toString())
+                        onVaultChanged(vault.copy(firstJump = score))
                     },
-                    label = { Text("1st") },
-                    placeholder = { Text("0.00") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                    singleLine = true,
-                    modifier = Modifier.widthIn(min = 88.dp)
+                    label = "1st"
                 )
 
                 Spacer(Modifier.width(8.dp))
 
-                OutlinedTextField(
-                    value = secondJumpText,
-                    onValueChange = {
-                        if (it.text.matches(Regex("^\\d{0,2}(\\.\\d{0,2})?\$"))) {
-                            secondJumpText = it
-                            onVaultChanged(vault.copy(secondJump = Score(it.text.toDoubleOrNull() ?: 0.0)))
-                        }
+                ScoreField(
+                    text = remember { mutableStateOf(secondJumpText) },
+                    onScoreChanged = { score ->
+                        secondJumpText = TextFieldValue(score.toString())
+                        onVaultChanged(vault.copy(secondJump = score))
                     },
-                    label = { Text("2nd") },
-                    placeholder = { Text("0.00") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                    singleLine = true,
-                    modifier = Modifier.widthIn(min = 88.dp)
+                    label = "2nd"
                 )
             }
         }
