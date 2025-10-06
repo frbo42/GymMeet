@@ -2,7 +2,6 @@ package org.fb.gym.meet.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -15,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import org.fb.gym.meet.data.*
@@ -165,19 +163,6 @@ private fun VaultRow(
     onVaultChanged: (VaultScore) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var firstJumpText by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(vault.firstJump.toString()))
-    }
-    var secondJumpText by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(vault.secondJump.toString()))
-    }
-
-    // Keep UI in sync when the parent updates the vault object
-    LaunchedEffect(vault) {
-        firstJumpText = TextFieldValue(vault.firstJump.toString())
-        secondJumpText = TextFieldValue(vault.secondJump.toString())
-    }
-
     Card(
         modifier = modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -209,10 +194,9 @@ private fun VaultRow(
             ) {
 
                 ScoreInput(
-                    text = remember { mutableStateOf(firstJumpText) },
+                    score = vault.firstJump,
                     // commit only on focus lost or clear
                     onCommitScore = { score ->
-                        firstJumpText = TextFieldValue(score.toString())
                         onVaultChanged(vault.copy(firstJump = score))
                     },
                     label = "1st"
@@ -221,10 +205,9 @@ private fun VaultRow(
                 Spacer(Modifier.width(8.dp))
 
                 ScoreInput(
-                    text = remember { mutableStateOf(secondJumpText) },
+                    score = vault.secondJump,
                     // commit only on focus lost or clear
                     onCommitScore = { score ->
-                        secondJumpText = TextFieldValue(score.toString())
                         onVaultChanged(vault.copy(secondJump = score))
                     },
                     label = "2nd"
@@ -242,15 +225,6 @@ private fun ScoreRow(
     onScoreChanged: (Score) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // Keep the text representation in sync with the Score value
-    val text = rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(score.toString()))
-    }
-
-    // Whenever the external `score` changes (e.g. restored from a ViewModel)
-    LaunchedEffect(score) {
-        text.value = TextFieldValue(score.toString())
-    }
     Card(
         modifier = modifier
             .fillMaxWidth(),
@@ -278,8 +252,7 @@ private fun ScoreRow(
             )
 
             ScoreInput(
-                text = text,
-                // commit only when focus is lost or clear pressed
+                score = score,
                 onCommitScore = onScoreChanged,
                 label = label
             )
@@ -288,52 +261,39 @@ private fun ScoreRow(
 }
 
 @Composable
-private fun ScoreInput(
-    text: MutableState<TextFieldValue>,
+fun ScoreInput(
+    score: Score,
     onCommitScore: (Score) -> Unit,
     label: String
 ) {
-    // Local input text is updated as user types, but we do NOT commit on every keystroke.
+    var text by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue(score.toString()))
+    }
+    LaunchedEffect(score) {
+        text = TextFieldValue(score.toString())
+    }
     var hasFocus by remember { mutableStateOf(false) }
 
     OutlinedTextField(
-        value = text.value,
-        onValueChange = { newValue ->
-            val accept = newValue.text.matches(Regex("^\\d{0,2}(\\.\\d{0,2})?$"))
-            if (accept) {
-                text.value = newValue
-                // do not call onCommitScore here (typing should not save)
+        value = text,
+        onValueChange = { new ->
+            if (new.text.matches(Regex("^\\d{0,2}(\\.\\d{0,2})?$"))) {
+                text = new
             }
         },
-        label = { Text("Score") },
-        placeholder = { Text("0.00") },
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Decimal
-        ),
-        singleLine = true,
+        // ...
+        modifier = Modifier.onFocusChanged { f ->
+            val lost = hasFocus && !f.isFocused
+            hasFocus = f.isFocused
+            if (lost) onCommitScore(Score(text.text.toDoubleOrNull() ?: 0.0))
+        },
         trailingIcon = {
-            if (text.value.text.isNotEmpty()) {
-                IconButton(onClick = {
-                    text.value = TextFieldValue("")
-                    // Clearing is an explicit change → commit 0.0
+            if (text.text.isNotEmpty()) {
+                IconButton({
+                    text = TextFieldValue("")
                     onCommitScore(Score(0.0))
-                }) {
-                    Icon(Icons.Filled.Clear, contentDescription = "Clear $label score")
-                }
+                }) { Icon(Icons.Filled.Clear, contentDescription = "Clear $label") }
             }
-        },
-        modifier = Modifier
-            .widthIn(min = 96.dp)
-            .padding(end = 12.dp)
-            // Commit when focus is lost
-            .onFocusChanged { focusState ->
-                val nowHasFocus = focusState.isFocused
-                if (hasFocus && !nowHasFocus) {
-                    // focus lost → commit if value actually changed
-                    val parsed = text.value.text.toDoubleOrNull()
-                    onCommitScore(Score(parsed ?: 0.0))
-                }
-                hasFocus = nowHasFocus
-            }
+        }
     )
 }
