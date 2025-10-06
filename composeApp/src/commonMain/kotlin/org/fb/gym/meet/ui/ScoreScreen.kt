@@ -7,21 +7,24 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Sports
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import gymmeet.composeapp.generated.resources.*
 import org.fb.gym.meet.data.*
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.painterResource
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -87,7 +90,7 @@ private fun ScoreCardContent(
     ) {
         // ----- FLOOR ----------------------------------------------------
         ScoreRow(
-            icon = Icons.Default.FitnessCenter, // replace with a floor‑icon
+            icon = Res.drawable.ic_floor,
             label = "Floor",
             score = scoreCard.floor,
             onScoreChanged = { updateCard(scoreCard.copy(floor = it)) }
@@ -95,7 +98,7 @@ private fun ScoreCardContent(
 
         // ----- RINGS ----------------------------------------------------
         ScoreRow(
-            icon = Icons.Default.SportsBar, // replace with a rings‑icon
+            icon = Res.drawable.ic_rings,
             label = "Rings",
             score = scoreCard.rings,
             onScoreChanged = { updateCard(scoreCard.copy(rings = it)) }
@@ -110,7 +113,7 @@ private fun ScoreCardContent(
         // ----- PARALLEL BARS --------------------------------------------
         if (gymnast.gender == Gender.M) {
             ScoreRow(
-                icon = Icons.Default.SportsGymnastics, // replace with parallel‑bars icon
+                icon = Res.drawable.ic_parallel_bar,
                 label = "Parallel Bars",
                 score = scoreCard.parallel,
                 onScoreChanged = { updateCard(scoreCard.copy(parallel = it)) },
@@ -119,7 +122,7 @@ private fun ScoreCardContent(
         }
         // ----- HORIZONTAL BAR -------------------------------------------
         ScoreRow(
-            icon = Icons.Default.Sports, // replace with horizontal‑bar icon
+            icon = Res.drawable.ic_horizontal_bar,
             label = "Horizontal Bar",
             score = scoreCard.bar,
             onScoreChanged = { updateCard(scoreCard.copy(bar = it)) }
@@ -179,7 +182,7 @@ private fun VaultRow(
                 .padding(horizontal = 12.dp, vertical = 8.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.ArrowUpward,
+                painter = painterResource(Res.drawable.ic_vault),
                 contentDescription = "Vault icon",
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(24.dp)
@@ -224,7 +227,7 @@ private fun VaultRow(
 
 @Composable
 private fun ScoreRow(
-    icon: ImageVector,
+    icon: DrawableResource,
     label: String,
     score: Score,
     onScoreChanged: (Score) -> Unit,
@@ -239,7 +242,7 @@ private fun ScoreRow(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = icon,
+                painter = painterResource(icon),
                 contentDescription = "$label icon",
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
