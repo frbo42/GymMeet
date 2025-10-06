@@ -17,7 +17,11 @@ data class ScoreCard(
     val vault: VaultScore = VaultScore(),
     val parallel: Score = Score(),
     val bar: Score = Score()
-)
+) {
+    fun total(): Score {
+        return floor + rings + vault.firstJump + vault.secondJump + parallel + bar
+    }
+}
 
 @Serializable
 data class VaultScore(
@@ -28,10 +32,11 @@ data class VaultScore(
 @JvmInline
 @Serializable
 value class Score(val value: Double = -1.0) {
-    override fun toString(): String = value.format2()
+    override fun toString(): String = value.format()
 
+    operator fun plus(other: Score): Score = Score(value + other.value)
 
-    fun Double.format2(): String {
+    private fun Double.format(): String {
         if (this < 0) return ""
         val decimals = 2
         // 1️⃣  Scale the number so we can round it to the desired precision

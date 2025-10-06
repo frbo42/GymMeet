@@ -9,7 +9,6 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -121,6 +120,41 @@ private fun ScoreCardContent(
             score = scoreCard.bar,
             onScoreChanged = { updateCard(scoreCard.copy(bar = it)) }
         )
+        // ----- total -------
+        Card(
+            modifier = Modifier
+                .fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Sports,
+                    contentDescription = "Total Score icon",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .padding(start = 12.dp)
+                )
+                Spacer(Modifier.width(12.dp))
+
+                Text(
+                    text = "Total",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(vertical = 12.dp)
+                )
+                Text(
+                    text = scoreCard.total().toString(),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier
+                        .widthIn(min = 96.dp)
+                        .padding(end = 12.dp)
+                )
+            }
+        }
     }
 }
 
@@ -196,51 +230,6 @@ private fun VaultRow(
         }
     }
 }
-
-/**
- * Saves a [ScoreCard] as a flat list of six Double values:
- *   0 – floor
- *   1 – rings
- *   2 – vault pre‑flight
- *   3 – vault post‑flight
- *   4 – parallel bars
- *   5 – horizontal bar
- *
- * The list can be written to the platform‑specific saved‑state store
- * (Bundle on Android, JSON on JS/Wasm, etc.) without any extra
- * dependencies.
- */
-private val ScoreCardSaver = Saver<ScoreCard, List<Double>>(
-    save = { card ->
-        listOf(
-            card.floor.value,
-            card.rings.value,
-            card.vault.firstJump.value,
-            card.vault.secondJump.value,
-            card.parallel.value,
-            card.bar.value
-        )
-    },
-    restore = { list ->
-        // Defensive: the list should always have exactly 6 elements,
-        // but we guard against malformed data just in case.
-        if (list.size != 6) {
-            // Return a brand‑new empty card if the saved payload is corrupt.
-            ScoreCard()
-        } else {
-            ScoreCard(
-                floor = Score(list[0]),
-                rings = Score(list[1]),
-                vault = VaultScore(
-                    firstJump = Score(list[2]),
-                    secondJump = Score(list[3])
-                ),
-                parallel = Score(list[4]),
-                bar = Score(list[5])
-            )
-        }
-    }
-)
 
 @Composable
 private fun ScoreRow(
