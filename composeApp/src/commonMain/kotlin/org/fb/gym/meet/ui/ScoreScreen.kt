@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
@@ -209,7 +210,8 @@ private fun VaultRow(
 
                 ScoreInput(
                     text = remember { mutableStateOf(firstJumpText) },
-                    onScoreChanged = { score ->
+                    // commit only on focus lost or clear
+                    onCommitScore = { score ->
                         firstJumpText = TextFieldValue(score.toString())
                         onVaultChanged(vault.copy(firstJump = score))
                     },
@@ -220,7 +222,8 @@ private fun VaultRow(
 
                 ScoreInput(
                     text = remember { mutableStateOf(secondJumpText) },
-                    onScoreChanged = { score ->
+                    // commit only on focus lost or clear
+                    onCommitScore = { score ->
                         secondJumpText = TextFieldValue(score.toString())
                         onVaultChanged(vault.copy(secondJump = score))
                     },
@@ -276,34 +279,34 @@ private fun ScoreRow(
 
             ScoreInput(
                 text = text,
-                onScoreChanged = onScoreChanged,
+                // commit only when focus is lost or clear pressed
+                onCommitScore = onScoreChanged,
                 label = label
             )
         }
     }
 }
 
-
 @Composable
 private fun ScoreInput(
     text: MutableState<TextFieldValue>,
-    onScoreChanged: (Score) -> Unit,
+    onCommitScore: (Score) -> Unit,
     label: String
 ) {
+    // Local input text is updated as user types, but we do NOT commit on every keystroke.
+    var hasFocus by remember { mutableStateOf(false) }
+
     OutlinedTextField(
         value = text.value,
-
         onValueChange = { newValue ->
             val accept = newValue.text.matches(Regex("^\\d{0,2}(\\.\\d{0,2})?$"))
             if (accept) {
                 text.value = newValue
-                val parsed = newValue.text.toDoubleOrNull()
-                onScoreChanged(Score(parsed ?: 0.0))
+                // do not call onCommitScore here (typing should not save)
             }
         },
         label = { Text("Score") },
         placeholder = { Text("0.00") },
-//                supportingText = { Text("0–10, max 2 decimals") },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Decimal
         ),
@@ -312,7 +315,8 @@ private fun ScoreInput(
             if (text.value.text.isNotEmpty()) {
                 IconButton(onClick = {
                     text.value = TextFieldValue("")
-                    onScoreChanged(Score(0.0))
+                    // Clearing is an explicit change → commit 0.0
+                    onCommitScore(Score(0.0))
                 }) {
                     Icon(Icons.Filled.Clear, contentDescription = "Clear $label score")
                 }
@@ -321,5 +325,15 @@ private fun ScoreInput(
         modifier = Modifier
             .widthIn(min = 96.dp)
             .padding(end = 12.dp)
+            // Commit when focus is lost
+            .onFocusChanged { focusState ->
+                val nowHasFocus = focusState.isFocused
+                if (hasFocus && !nowHasFocus) {
+                    // focus lost → commit if value actually changed
+                    val parsed = text.value.text.toDoubleOrNull()
+                    onCommitScore(Score(parsed ?: 0.0))
+                }
+                hasFocus = nowHasFocus
+            }
     )
 }
