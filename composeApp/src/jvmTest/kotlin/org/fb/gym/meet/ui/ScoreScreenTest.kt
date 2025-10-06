@@ -1,6 +1,5 @@
 package org.fb.gym.meet.ui
 
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.runComposeUiTest
@@ -11,25 +10,13 @@ import org.fb.gym.meet.data.Category
 import org.fb.gym.meet.data.Gender
 import org.fb.gym.meet.data.Gymnast
 import org.fb.gym.meet.data.ScoreCard
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.test.Test
 
-
-@Preview
-@Composable
-fun ScoreScreenShow() {
-    ScoreScreen(
-        Gymnast("frbo", "Frank", "Bommeli", Category.C5, Gender.M),
-        FakeScoreContract()
-    )
-}
+val male = Gymnast("ob", "Olivier", "Bommeli", Category.C5, Gender.M)
+val female = Gymnast("la", "Louise", "Auriou", Category.C6, Gender.F)
 
 @OptIn(ExperimentalTestApi::class)
 class ScoreScreenTest {
-    companion object {
-        val male = Gymnast("ob", "Olivier", "Bommeli", Category.C5, Gender.M)
-        val female = Gymnast("la", "Louise", "Auriou", Category.C6, Gender.F)
-    }
 
     @Test
     fun `when male parallel bar present`() = runComposeUiTest {
@@ -54,6 +41,7 @@ class ScoreScreenTest {
 
         onNodeWithTag("parallelBarRow").assertDoesNotExist()
     }
+
 }
 
 class FakeScoreContract(
