@@ -2,6 +2,8 @@ package org.fb.gym.meet.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -13,7 +15,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import org.fb.gym.meet.data.*
@@ -269,23 +274,35 @@ fun ScoreInput(
     var text by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(score.toString()))
     }
-    LaunchedEffect(score) {
-        text = TextFieldValue(score.toString())
-    }
-    var hasFocus by remember { mutableStateOf(false) }
+    LaunchedEffect(score) { text = TextFieldValue(score.toString()) }
+
+    var hadFocus by remember { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
 
     OutlinedTextField(
         value = text,
         onValueChange = { new ->
-            if (new.text.matches(Regex("^\\d{0,2}(\\.\\d{0,2})?$"))) {
-                text = new
-            }
+            if (new.text.matches(Regex("^\\d{0,2}(\\.\\d{0,2})?$"))) text = new
         },
-        // ...
-        modifier = Modifier.onFocusChanged { f ->
-            val lost = hasFocus && !f.isFocused
-            hasFocus = f.isFocused
-            if (lost) onCommitScore(Score(text.text.toDoubleOrNull() ?: 0.0))
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Decimal,
+            imeAction = ImeAction.Done
+        ),
+        keyboardActions = KeyboardActions(
+            onDone = {
+                val parsed = text.text.toDoubleOrNull() ?: 0.0
+                onCommitScore(Score(parsed))
+                focusManager.clearFocus() // optional: close keyboard on Android
+            }
+        ),
+        modifier = Modifier.onFocusChanged { state ->
+            val lost = hadFocus && !state.isFocused
+            if (lost) {
+                val parsed = text.text.toDoubleOrNull() ?: 0.0
+                onCommitScore(Score(parsed))
+            }
+            hadFocus = state.isFocused
         },
         trailingIcon = {
             if (text.text.isNotEmpty()) {
