@@ -127,40 +127,44 @@ private fun ScoreCardContent(
             score = scoreCard.bar,
             onScoreChanged = { updateCard(scoreCard.copy(bar = it)) }
         )
-        // ----- total -------
-        Card(
-            modifier = Modifier
-                .fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = Icons.Default.SportsGymnastics,
-                    contentDescription = "Total Score icon",
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier
-                        .size(24.dp)
-                        .padding(start = 12.dp)
-                )
-                Spacer(Modifier.width(12.dp))
+        TotalRow(scoreCard)
+    }
+}
 
-                Text(
-                    text = "Total",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(vertical = 12.dp)
-                )
-                Text(
-                    text = scoreCard.total().toString(),
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier
-                        .widthIn(min = 96.dp)
-                        .padding(end = 12.dp)
-                )
-            }
+@Composable
+private fun TotalRow(scoreCard: ScoreCard) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Default.SportsGymnastics,
+                contentDescription = "Total Score icon",
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .size(24.dp)
+                    .padding(start = 12.dp)
+            )
+            Spacer(Modifier.width(12.dp))
+
+            Text(
+                text = "Total",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(vertical = 12.dp)
+            )
+            Text(
+                text = scoreCard.total().toString(),
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier
+                    .widthIn(min = 96.dp)
+                    .padding(end = 12.dp)
+            )
         }
     }
 }
