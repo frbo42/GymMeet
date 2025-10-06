@@ -18,9 +18,8 @@ data class ScoreCard(
     val parallel: Score = Score(),
     val bar: Score = Score()
 ) {
-    fun total(): Score {
-        return floor + rings + vault.score() + parallel + bar
-    }
+    fun total(): Score = floor + rings + vault.score() + parallel + bar
+
 }
 
 @Serializable
@@ -28,9 +27,8 @@ data class VaultScore(
     val firstJump: Score = Score(),
     val secondJump: Score = Score()
 ) {
-    fun score(): Score {
-        return (firstJump + secondJump) / 2
-    }
+    fun score(): Score = (firstJump + secondJump) / 2
+
 }
 
 @JvmInline
@@ -40,9 +38,7 @@ value class Score(val value: Double = -1.0) {
 
     operator fun plus(other: Score): Score = Score(value + other.value)
 
-    operator fun div(divider: Int): Score {
-        return Score(value / divider)
-    }
+    operator fun div(divider: Int): Score = Score(value / divider)
 
     private fun Double.format(): String {
         if (this < 0) return ""
