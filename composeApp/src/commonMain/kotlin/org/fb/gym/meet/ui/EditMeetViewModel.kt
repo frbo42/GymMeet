@@ -13,6 +13,15 @@ import org.fb.gym.meet.data.*
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
+
+interface EditMeetContract {
+    val uiState: StateFlow<EditMeetUiState>
+    fun onSave()
+    fun onNameChanged(newName: String)
+    fun toggleGymnastSelection(gymnastId: String)
+    fun onDateChanged(newDate: String)
+}
+
 /**
  * Holds the list of meets and a single‑shot “add” operation.
  *
@@ -25,13 +34,13 @@ class EditMeetViewModel(
     private val meetRepo: MeetRepository,
     private val gymnastRepo: GymnastRepository,
     private val externalScope: CoroutineScope = CoroutineScope(Dispatchers.Main + Job())
-) {
+) : EditMeetContract {
 
     // -----------------------------------------------------------------
     // 1️⃣  UI state – combines the meet fields + the list of gymnasts
     // -----------------------------------------------------------------
     private val _uiState = MutableStateFlow(EditMeetUiState())
-    val uiState: StateFlow<EditMeetUiState> = _uiState.asStateFlow()
+    override val uiState: StateFlow<EditMeetUiState> = _uiState.asStateFlow()
 
     init {
         externalScope.launch {
@@ -57,15 +66,15 @@ class EditMeetViewModel(
     // -----------------------------------------------------------------
     // 2️⃣  Mutators for the text fields
     // -----------------------------------------------------------------
-    fun onNameChanged(newName: String) {
+    override fun onNameChanged(newName: String) {
         _uiState.update { it.copy(name = newName, nameError = null) }
     }
 
-    fun onDateChanged(newDate: String) {
+    override fun onDateChanged(newDate: String) {
         _uiState.update { it.copy(date = newDate, dateError = null) }
     }
 
-    fun toggleGymnastSelection(gymnastId: String) {
+    override fun toggleGymnastSelection(gymnastId: String) {
         _uiState.update { state ->
             val newSet = state.selectedGymnastIds.toMutableSet()
             if (!newSet.add(gymnastId)) {
@@ -79,7 +88,7 @@ class EditMeetViewModel(
     // -----------------------------------------------------------------
     // 4️⃣  Save the meet (validation + repository call)
     // -----------------------------------------------------------------
-    fun onSave() {
+    override fun onSave() {
 
         val current = _uiState.value
         var ok = true

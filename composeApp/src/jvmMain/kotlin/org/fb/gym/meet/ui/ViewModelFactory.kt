@@ -15,6 +15,15 @@ actual fun createMeetViewModel(
     return DisplayMeetViewModel(repository, desktopScope)
 }
 
+actual fun createEditMeetViewModel(
+    meetId: String,
+    meetRepo: MeetRepository,
+    gymnastRepo: GymnastRepository,
+): EditMeetContract {
+    val desktopScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    return EditMeetViewModel(meetId, meetRepo, gymnastRepo, desktopScope)
+}
+
 actual fun createScoreCardViewModel(
     scoreCardId: ScoreCardId,
     repository: MeetRepository

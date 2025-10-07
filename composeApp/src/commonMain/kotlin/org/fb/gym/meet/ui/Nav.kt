@@ -71,10 +71,13 @@ private fun NavGraphBuilder.createMeetRoute(
     navController: NavHostController
 ) {
     composable(Screen.CreateMeet.route) {
-        val vm = EditMeetViewModel(
-            meetRepo = meetRepo,
-            gymnastRepo = gymnastRepo
-        )
+        val vm = remember(meetRepo, gymnastRepo) {
+            createEditMeetViewModel(
+                Uuid.random().toString(),
+                meetRepo = meetRepo,
+                gymnastRepo = gymnastRepo
+            )
+        }
         val uiState = vm.uiState.collectAsState()
         val actions = EditMeetActions(
             onBack = { navController.popBackStack() },
@@ -104,11 +107,14 @@ private fun NavGraphBuilder.editMeetRoute(
     composable(Screen.EditMeet("{meetId}").route) { backStackEntry ->
         val handle = backStackEntry.savedStateHandle.get<String>("meetId")
         val meetId = handle ?: Uuid.random().toString()
-        val vm = EditMeetViewModel(
-            meetId,
-            meetRepo,
-            gymnastRepo
-        )
+        val vm = remember(meetRepo, gymnastRepo) {
+            createEditMeetViewModel(
+                meetId = meetId,
+                meetRepo = meetRepo,
+                gymnastRepo = gymnastRepo
+            )
+        }
+
         val uiState = vm.uiState.collectAsState()
         val actions = EditMeetActions(
             onBack = { navController.popBackStack() },
