@@ -2,6 +2,7 @@ package org.fb.gym.meet.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -162,9 +163,14 @@ private fun NavGraphBuilder.scoreRoute(
         val meetId = handleMeetId ?: return@composable
         val gymnastId = handleGymnastId ?: return@composable
 
+        val scoreCardId = ScoreCardId(meetId, gymnastId)
+        val viewModel = remember(scoreCardId, meetRepository) {
+            createScoreCardViewModel(scoreCardId, meetRepository)
+        }
+
         ScoreScreen(
             gymnastRepo.observeGymnast(gymnastId).collectAsState(null).value,
-            ScoreViewModel(ScoreCardId(meetId, gymnastId), meetRepository),
+            viewModel,
             onBackClick = { navController.popBackStack() }
         )
     }

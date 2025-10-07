@@ -13,17 +13,9 @@ import org.fb.gym.meet.data.ScoreCard
 import org.fb.gym.meet.data.ScoreCardId
 
 
-/**
- * A lightweight, platform‑neutral ViewModel.
- *
- * - `scoreCardId` uniquely identifies the gymnast whose scores we edit.
- * - `repository` is injected (DI‑friendly) – you can pass a real DB impl later.
- */
-
 interface ScoreContract {
     val scoreCard: StateFlow<ScoreCard?>
 
-    /** Called by the UI whenever a field changes. */
     fun updateScoreCard(updated: ScoreCard)
 }
 
