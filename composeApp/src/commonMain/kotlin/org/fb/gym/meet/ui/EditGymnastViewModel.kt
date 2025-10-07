@@ -9,26 +9,37 @@ import org.fb.gym.meet.data.Category
 import org.fb.gym.meet.data.Gender
 import org.fb.gym.meet.data.GymnastRepository
 
+
+interface EditGymnastContract {
+    fun onSave(onSaved: () -> Unit)
+
+    val uiState: StateFlow<EditGymnastUiState>
+    fun onFirstNameChanged(text: String)
+    fun onLastNameChanged(text: String)
+    fun onGenderChanged(gender: Gender)
+    fun onCategoryChanged(category: Category)
+}
+
 class EditGymnastViewModel(
-    private val repository: GymnastRepository,
     /** If null → we are creating a new gymnast, otherwise we are editing. */
-    private val existingGymnastId: String? = null,
+    private val gymnastId: String? = null,
+    private val repository: GymnastRepository,
     private val externalScope: CoroutineScope = CoroutineScope(Dispatchers.Main + Job())
-) {
+) : EditGymnastContract {
 
     // -----------------------------------------------------------------
     // 1️⃣  Load the existing gymnast (if we are editing) and map it
     //     to the UI state.  If we are creating, start with the default state.
     // -----------------------------------------------------------------
     private val _uiState: MutableStateFlow<EditGymnastUiState> = MutableStateFlow(EditGymnastUiState())
-    val uiState: StateFlow<EditGymnastUiState> = _uiState.asStateFlow()
+    override val uiState: StateFlow<EditGymnastUiState> = _uiState.asStateFlow()
 
     init {
-        if (existingGymnastId != null) {
+        if (gymnastId != null) {
             // Pull the gymnast from the repository once and populate the UI.
             externalScope.launch {
                 repository.observeGymnasts()
-                    .map { list -> list.find { it.id == existingGymnastId } }
+                    .map { list -> list.find { it.id == gymnastId } }
                     .filterNotNull()
                     .first()                     // we only need the first emission
                     .let { gymnast ->
@@ -46,26 +57,26 @@ class EditGymnastViewModel(
     // -----------------------------------------------------------------
     // 2️⃣  Mutators – called from the UI when the user types / selects.
     // -----------------------------------------------------------------
-    fun onFirstNameChanged(text: String) {
+    override fun onFirstNameChanged(text: String) {
         _uiState.update { it.copy(firstName = text, firstNameError = null) }
     }
 
-    fun onLastNameChanged(text: String) {
+    override fun onLastNameChanged(text: String) {
         _uiState.update { it.copy(lastName = text, lastNameError = null) }
     }
 
-    fun onGenderChanged(gender: Gender) {
+    override fun onGenderChanged(gender: Gender) {
         _uiState.update { it.copy(gender = gender) }
     }
 
-    fun onCategoryChanged(category: Category) {
+    override fun onCategoryChanged(category: Category) {
         _uiState.update { it.copy(category = category) }
     }
 
     // -----------------------------------------------------------------
     // 3️⃣  Save – validates, persists via the repository, and signals success.
     // -----------------------------------------------------------------
-    fun onSave(onSaved: () -> Unit) {
+    override fun onSave(onSaved: () -> Unit) {
         val current = _uiState.value
         var ok = true
         var fnError: String? = null
@@ -86,7 +97,7 @@ class EditGymnastViewModel(
         }
 
         // Build the Gymnast entity (preserve the original id if editing)
-        val gymnast = current.toGymnast(existingGymnastId)
+        val gymnast = current.toGymnast(gymnastId)
 
         externalScope.launch {
             repository.saveGymnast(gymnast)

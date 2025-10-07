@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import org.fb.gym.meet.data.Category
 import org.fb.gym.meet.data.Gender
 import org.fb.gym.meet.data.Gymnast
@@ -24,7 +23,7 @@ import kotlin.uuid.Uuid
 fun EditGymnastScreen(
     /** Null → create new; non‑null → edit existing (id passed from navigation) */
     gymnastId: String? = null,
-    vm: EditGymnastViewModel = viewModel(),
+    vm: EditGymnastContract,
     /** Called when the user wants to go back (e.g., cancel). */
     onBack: () -> Unit = {},
     /** Called after a successful save – usually pop the back stack. */
@@ -173,10 +172,3 @@ data class EditGymnastUiState(
         category = category
     )
 }
-
-data class EditGymnastActions(
-    /** Called when the user wants to go back (cancel). */
-    val onBack: () -> Unit = {},
-    /** Called after a successful save – usually pop the back stack. */
-    val onSaved: () -> Unit = {}
-)

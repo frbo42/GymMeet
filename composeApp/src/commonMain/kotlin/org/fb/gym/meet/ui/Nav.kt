@@ -184,9 +184,12 @@ private fun NavGraphBuilder.createGymnastRoute(
 ) {
     composable(Screen.CreateGymnast.route) {
         val id = Uuid.random().toString()
+        val vm = remember(id, gymnastRepo) {
+            createEditGymnastViewModel(id, gymnastRepo)
+        }
         EditGymnastScreen(
             gymnastId = id,
-            vm = EditGymnastViewModel(gymnastRepo, id),
+            vm,
             onBack = { navController.popBackStack() },
             onSaved = { navController.popBackStack() }   // go back after save
         )
@@ -201,7 +204,7 @@ private fun NavGraphBuilder.editGymnastRoute(
         val id = backStackEntry.savedStateHandle.get<String>("gymnastId")
         EditGymnastScreen(
             gymnastId = id,
-            vm = EditGymnastViewModel(gymnastRepo, id),
+            vm = EditGymnastViewModel(id, gymnastRepo),
             onBack = { navController.popBackStack() },
             onSaved = { navController.popBackStack() }   // go back after save
         )
