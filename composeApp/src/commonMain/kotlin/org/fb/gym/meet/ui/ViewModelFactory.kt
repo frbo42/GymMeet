@@ -7,3 +7,7 @@ expect fun createScoreCardViewModel(
     scoreCardId: ScoreCardId,
     repository: MeetRepository
 ): ScoreContract
+
+expect fun createMeetViewModel(
+    repository: MeetRepository
+): MeetContract

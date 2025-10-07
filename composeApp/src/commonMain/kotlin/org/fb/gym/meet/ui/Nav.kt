@@ -51,7 +51,8 @@ private fun NavGraphBuilder.meetRoute(
     navController: NavHostController
 ) {
     composable(Screen.Meet.route) {
-        val vm = DisplayMeetViewModel(meetRepo)
+        val vm = remember(meetRepo) { createMeetViewModel(meetRepo) }
+
         MeetScreen(
             meets = vm.meets.collectAsState().value,
             MeetActions(

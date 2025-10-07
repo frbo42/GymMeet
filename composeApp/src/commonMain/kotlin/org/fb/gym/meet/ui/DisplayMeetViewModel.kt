@@ -9,13 +9,17 @@ import kotlinx.coroutines.flow.stateIn
 import org.fb.gym.meet.data.MeetOverview
 import org.fb.gym.meet.data.MeetRepository
 
+interface MeetContract {
+    val meets: StateFlow<List<MeetOverview>>
+}
+
 class DisplayMeetViewModel(
-    private val repository: MeetRepository,
-    private val externalScope: CoroutineScope = CoroutineScope(Dispatchers.Main + Job())
-) {
+    repository: MeetRepository,
+    externalScope: CoroutineScope = CoroutineScope(Dispatchers.Main + Job())
+) : MeetContract {
 
     /** Public stream of the current meet list. */
-    val meets: StateFlow<List<MeetOverview>> = repository
+    override val meets: StateFlow<List<MeetOverview>> = repository
         .observeMeets()
         .stateIn(
             scope = externalScope,
