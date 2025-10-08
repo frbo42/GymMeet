@@ -127,12 +127,12 @@ private fun ScoreCardContent(
             score = scoreCard.bar,
             onScoreChanged = { updateCard(scoreCard.copy(bar = it)) }
         )
-        TotalRow(scoreCard)
+        TotalRow(scoreCard, gymnast)
     }
 }
 
 @Composable
-private fun TotalRow(scoreCard: ScoreCard) {
+private fun TotalRow(scoreCard: ScoreCard, gymnast: Gymnast) {
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -159,7 +159,7 @@ private fun TotalRow(scoreCard: ScoreCard) {
                     .padding(vertical = 12.dp)
             )
             Text(
-                text = scoreCard.total().toString(),
+                text = scoreCard.total(gymnast.category).toString(),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier
                     .widthIn(min = 96.dp)

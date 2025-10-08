@@ -18,7 +18,7 @@ data class ScoreCard(
     val parallel: Score = Score(),
     val bar: Score = Score()
 ) {
-    fun total(): Score = floor + rings + vault.score() + parallel + bar
+    fun total(category: Category): Score = floor + rings + vault.score(category) + parallel + bar
 
 }
 
@@ -27,18 +27,28 @@ data class VaultScore(
     val firstJump: Score = Score(),
     val secondJump: Score = Score()
 ) {
-    fun score(): Score = (firstJump + secondJump) / 2
+    fun score(category: Category): Score =
+        when (category.vaultScoring) {
+            VaultScoring.AVERAGE -> {
+                val avg = listOf<Double>(this.firstJump.value, this.secondJump.value).average()
+                Score(avg)
+            }
+
+            else -> maxOf(firstJump, secondJump)
+        }
 
 }
 
 @JvmInline
 @Serializable
-value class Score(val value: Double = -1.0) {
+value class Score(val value: Double = 0.0) : Comparable<Score> {
     override fun toString(): String = value.format()
 
     operator fun plus(other: Score): Score = Score(value + other.value)
 
     operator fun div(divider: Int): Score = Score(value / divider)
+
+    override operator fun compareTo(other: Score): Int = value.compareTo(other.value)
 
     private fun Double.format(): String {
         if (this < 0) return ""

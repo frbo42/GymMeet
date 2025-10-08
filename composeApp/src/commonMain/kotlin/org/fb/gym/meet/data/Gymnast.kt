@@ -16,6 +16,16 @@ enum class Gender {
     M, F
 }
 
-enum class Category {
-    C1, C2, C3, C4, C5, C6, C7
+enum class Category(val vaultScoring: VaultScoring) {
+    C1(VaultScoring.MAX),
+    C2(VaultScoring.MAX),
+    C3(VaultScoring.MAX),
+    C4(VaultScoring.MAX),
+    C5(VaultScoring.MAX),
+    C6(VaultScoring.AVERAGE),
+    C7(VaultScoring.AVERAGE)
+}
+
+enum class VaultScoring {
+    MAX, AVERAGE
 }
