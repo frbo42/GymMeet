@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Gymnastics scoring app launcher icon (1024x1024).
+  Central dynamic gymnast + five small apparatus pictograms for:
+  floor, high bar, parallel bars, vault, rings.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img"
+     aria-label="Gym scoring app icon">
+    <defs>
+        <!-- smooth background gradient -->
+        <linearGradient id="bgGrad" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0" stop-color="#3AA3D9"/>
+            <stop offset="0.5" stop-color="#6C63FF"/>
+            <stop offset="1" stop-color="#B94DDC"/>
+        </linearGradient>
+
+        <!-- subtle drop shadow for the central figure -->
+        <filter id="figShadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="0" dy="18" stdDeviation="24" flood-color="#000" flood-opacity="0.18"/>
+        </filter>
+
+        <!-- rounded mask so icon corners are rounded (launcher-friendly) -->
+        <clipPath id="rounded">
+            <rect x="32" y="32" width="960" height="960" rx="160" ry="160"/>
+        </clipPath>
+
+        <!-- small symbol styles -->
+        <style id="tinyStyle"><![CDATA[
+      .appSymbol { fill: white; opacity: 0.95; }
+      .tinyCircle { fill: rgba(255,255,255,0.09); stroke: none; }
+    ]]></style>
+    </defs>
+
+    <!-- background rounded rectangle -->
+    <g clip-path="url(#rounded)">
+        <rect width="1024" height="1024" fill="url(#bgGrad)"/>
+        <!-- subtle vignette -->
+        <radialGradient id="vign" cx="50%" cy="40%" r="70%">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.03"/>
+            <stop offset="100%" stop-color="#000000" stop-opacity="0.05"/>
+        </radialGradient>
+        <rect width="1024" height="1024" fill="url(#vign)"/>
+    </g>
+
+    <!-- central gymnast (white) -->
+    <g transform="translate(0, -10)" filter="url(#figShadow)">
+        <!-- head -->
+        <circle cx="512" cy="300" r="44" fill="#FFFFFF"/>
+
+        <!-- body + arms + legs — stylized dynamic pose (path) -->
+        <path d="M480 360
+             C460 380, 430 430, 420 480
+             C410 520, 430 540, 460 530
+             C500 518, 540 490, 575 470
+             C605 455, 600 430, 580 410
+             C560 390, 530 390, 500 395
+             C485 398, 472 380, 480 360 Z
+             M520 365
+             C580 330, 640 310, 720 280
+             L700 250
+             C630 280, 570 320, 520 355 Z"
+              fill="#FFFFFF" fill-rule="evenodd"/>
+
+        <!-- left leg trailing -->
+        <path d="M460 530 C420 600, 380 680, 340 740
+             L370 760 C415 700, 445 640, 478 570 Z" fill="#FFFFFF"/>
+
+        <!-- right leg kicked back -->
+        <path d="M575 470 C640 520, 710 560, 770 600
+             L740 630 C690 590, 630 560, 575 510 Z" fill="#FFFFFF"/>
+    </g>
+
+    <!-- bottom band for small apparatus icons -->
+    <g transform="translate(0,0)">
+        <!-- translucent rounded strip -->
+        <rect x="52" y="740" width="920" height="196" rx="46" ry="46" fill="rgba(255,255,255,0.06)"/>
+    </g>
+
+    <!-- five apparatus pictograms centered along the bottom -->
+    <g transform="translate(0,0)" aria-hidden="false">
+        <style><![CDATA[
+      .symbol { transform-origin: center; }
+    ]]></style>
+
+        <!-- positions for five icons -->
+        <!-- circle containers -->
+        <g transform="translate(102,838)">
+            <circle class="tinyCircle" cx="0" cy="0" r="60"/>
+            <!-- Floor (simple mat grid) -->
+            <g class="appSymbol symbol" transform="translate(-22,-22) scale(1.0)">
+                <rect x="0" y="0" width="44" height="28" rx="3" ry="3"/>
+                <path d="M0 10 H44 M0 20 H44 M12 0 V28 M24 0 V28" stroke="#3AA3D9" stroke-width="2"
+                      stroke-linecap="round" fill="none" transform="translate(0,0)"/>
+            </g>
+        </g>
+
+        <g transform="translate(286,838)">
+            <circle class="tinyCircle" cx="0" cy="0" r="60"/>
+            <!-- High bar (single horizontal bar between uprights) -->
+            <g class="appSymbol symbol" transform="translate(-28,-18) scale(1.0)">
+                <rect x="0" y="24" width="56" height="6" rx="3" ry="3"/>
+                <rect x="6" y="0" width="8" height="40" rx="2"/>
+                <rect x="42" y="0" width="8" height="40" rx="2"/>
+            </g>
+        </g>
+
+        <g transform="translate(470,838)">
+            <circle class="tinyCircle" cx="0" cy="0" r="60"/>
+            <!-- Parallel bars (two parallel bars on short supports) -->
+            <g class="appSymbol symbol" transform="translate(-34,-20) scale(1.0)">
+                <rect x="0" y="12" width="64" height="6" rx="3" ry="3"/>
+                <rect x="0" y="28" width="64" height="6" rx="3" ry="3"/>
+                <rect x="6" y="0" width="8" height="36" rx="2"/>
+                <rect x="50" y="0" width="8" height="36" rx="2"/>
+            </g>
+        </g>
+
+        <g transform="translate(654,838)">
+            <circle class="tinyCircle" cx="0" cy="0" r="60"/>
+            <!-- Vault (stylized vaulting table) -->
+            <g class="appSymbol symbol" transform="translate(-28,-22) scale(1.0)">
+                <rect x="6" y="22" width="44" height="10" rx="4"/>
+                <rect x="0" y="36" width="56" height="6" rx="3"/>
+                <path d="M4 22 L12 8 L44 8 L52 22 Z" fill="#FFFFFF"/>
+            </g>
+        </g>
+
+        <g transform="translate(838,838)">
+            <circle class="tinyCircle" cx="0" cy="0" r="60"/>
+            <!-- Rings (two hanging rings) -->
+            <g class="appSymbol symbol" transform="translate(-20,-28) scale(1.0)">
+                <path d="M8 0 L8 18" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+                <path d="M36 0 L36 18" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+                <circle cx="8" cy="36" r="12" fill="none" stroke="#FFFFFF" stroke-width="4"/>
+                <circle cx="36" cy="36" r="12" fill="none" stroke="#FFFFFF" stroke-width="4"/>
+            </g>
+        </g>
+
+    </g>
+
+</svg>

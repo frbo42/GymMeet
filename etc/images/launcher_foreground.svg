@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="108" height="108" viewBox="0 0 108 108">
+    <g transform="translate(0,-2)">
+        <!-- Head -->
+        <circle cx="54" cy="32" r="5" fill="#FFFFFF"/>
+        <!-- Torso and arms -->
+        <path d="M51 37
+             C49 39, 46 43, 45 47
+             C44 50, 46 52, 49 51
+             C53 49, 57 46, 61 44
+             C64 43, 63 40, 61 38
+             C59 36, 56 36, 53 36
+             C52 36.2, 51 35, 51 37 Z
+             M54 36
+             C61 32, 67 30, 75 27
+             L73 24
+             C66 27, 59 31, 54 35 Z"
+              fill="#FFFFFF"/>
+        <!-- Left leg -->
+        <path d="M49 51 C44 58, 39 67, 34 74
+             L37 76 C42 70, 45 64, 49 57 Z"
+              fill="#FFFFFF"/>
+        <!-- Right leg -->
+        <path d="M61 44 C67 49, 74 53, 80 57
+             L77 60 C72 56, 66 52, 61 48 Z"
+              fill="#FFFFFF"/>
+    </g>
+</svg>
