@@ -193,45 +193,42 @@ private fun VaultRow(
             )
             Spacer(Modifier.width(12.dp))
 
+            // Keep the label readable; don't let inputs steal all space
             Text(
                 text = "Vault",
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.weight(1f)
+                maxLines = 1,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(vertical = 12.dp)
+                    .widthIn(min = 64.dp)
             )
 
-            // Make two equal-sized inputs
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
+            // Compact, fixed-width inputs
+            ScoreInput(
+                score = vault.firstJump,
+                onCommitScore = { score ->
+                    onVaultChanged(vault.copy(firstJump = score))
+                },
+                label = "1st",
                 modifier = Modifier
-                    .widthIn(min = 220.dp) // ensure both fit on small phones
-            ) {
+                    .widthIn(min = 96.dp, max = 120.dp)
+            )
 
-                ScoreInput(
-                    score = vault.firstJump,
-                    onCommitScore = { score ->
-                        onVaultChanged(vault.copy(firstJump = score))
-                    },
-                    label = "1st",
-                    modifier = Modifier
-                        .weight(1f)
-                )
+            Spacer(Modifier.width(8.dp))
 
-                Spacer(Modifier.width(8.dp))
-
-                ScoreInput(
-                    score = vault.secondJump,
-                    onCommitScore = { score ->
-                        onVaultChanged(vault.copy(secondJump = score))
-                    },
-                    label = "2nd",
-                    modifier = Modifier
-                        .weight(1f)
-                )
-            }
+            ScoreInput(
+                score = vault.secondJump,
+                onCommitScore = { score ->
+                    onVaultChanged(vault.copy(secondJump = score))
+                },
+                label = "2nd",
+                modifier = Modifier
+                    .widthIn(min = 96.dp, max = 120.dp)
+            )
         }
     }
 }
-
 @Composable
 private fun ScoreRow(
     icon: DrawableResource,
@@ -261,16 +258,19 @@ private fun ScoreRow(
             Text(
                 text = label,
                 style = MaterialTheme.typography.titleMedium,
+                maxLines = 1,
                 modifier = Modifier
                     .weight(1f)
                     .padding(vertical = 12.dp)
+                    .widthIn(min = 64.dp)
             )
 
             ScoreInput(
                 score = score,
                 onCommitScore = onScoreChanged,
                 label = label,
-//                modifier = Modifier.widthIn(min = 96.dp) // fixed, compact width
+                modifier = Modifier
+                    .widthIn(min = 96.dp, max = 120.dp)
             )
             Spacer(Modifier.width(12.dp))
         }
@@ -282,7 +282,7 @@ fun ScoreInput(
     score: Score,
     onCommitScore: (Score) -> Unit,
     label: String,
-    modifier: Modifier = Modifier // add modifier
+    modifier: Modifier = Modifier
 ) {
     var text by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(score.toString()))
@@ -306,20 +306,19 @@ fun ScoreInput(
             onDone = {
                 val parsed = text.text.toDoubleOrNull() ?: 0.0
                 onCommitScore(Score(parsed))
-                focusManager.clearFocus() // optional: close keyboard on Android
+                focusManager.clearFocus()
             }
         ),
-        modifier = modifier.onFocusChanged { state ->
-            val lost = hadFocus && !state.isFocused
-            if (lost) {
-                val parsed = text.text.toDoubleOrNull() ?: 0.0
-                onCommitScore(Score(parsed))
-            }
-            hadFocus = state.isFocused
-        }
-            .heightIn(min = 56.dp) // standard M3 height
-            .widthIn(min = 96.dp, max = 120.dp), // consistent compact width (fits 99.99)
-//        label = { Text(label) },
+        modifier = modifier
+            .heightIn(min = 56.dp)
+            .onFocusChanged { state ->
+                val lost = hadFocus && !state.isFocused
+                if (lost) {
+                    val parsed = text.text.toDoubleOrNull() ?: 0.0
+                    onCommitScore(Score(parsed))
+                }
+                hadFocus = state.isFocused
+            },
         trailingIcon = {
             if (text.text.isNotEmpty()) {
                 IconButton({
