@@ -23,7 +23,8 @@ enum class Category(val vaultScoring: VaultScoring) {
     C4(VaultScoring.MAX),
     C5(VaultScoring.MAX),
     C6(VaultScoring.AVERAGE),
-    C7(VaultScoring.AVERAGE)
+    C7(VaultScoring.AVERAGE),
+    WOMEN_MEN(VaultScoring.AVERAGE),
 }
 
 enum class VaultScoring {

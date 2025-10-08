@@ -49,7 +49,7 @@ class ScoreCardTest {
             vault = VaultScore(Score(1.0), Score(3.0)),
         )
 
-        val averageCategories = setOf(Category.C6, Category.C7)
+        val averageCategories = setOf(Category.C6, Category.C7, Category.WOMEN_MEN)
 
         averageCategories.forEach {
             val total = scoreCard.total(it)
