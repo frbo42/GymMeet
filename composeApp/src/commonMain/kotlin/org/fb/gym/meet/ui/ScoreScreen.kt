@@ -199,30 +199,33 @@ private fun VaultRow(
                 modifier = Modifier.weight(1f)
             )
 
-            // first field
+            // Make two equal-sized inputs
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(end = 8.dp)
+                modifier = Modifier
+                    .widthIn(min = 220.dp) // ensure both fit on small phones
             ) {
 
                 ScoreInput(
                     score = vault.firstJump,
-                    // commit only on focus lost or clear
                     onCommitScore = { score ->
                         onVaultChanged(vault.copy(firstJump = score))
                     },
-                    label = "1st"
+                    label = "1st",
+                    modifier = Modifier
+                        .weight(1f)
                 )
 
                 Spacer(Modifier.width(8.dp))
 
                 ScoreInput(
                     score = vault.secondJump,
-                    // commit only on focus lost or clear
                     onCommitScore = { score ->
                         onVaultChanged(vault.copy(secondJump = score))
                     },
-                    label = "2nd"
+                    label = "2nd",
+                    modifier = Modifier
+                        .weight(1f)
                 )
             }
         }
@@ -266,8 +269,10 @@ private fun ScoreRow(
             ScoreInput(
                 score = score,
                 onCommitScore = onScoreChanged,
-                label = label
+                label = label,
+//                modifier = Modifier.widthIn(min = 96.dp) // fixed, compact width
             )
+            Spacer(Modifier.width(12.dp))
         }
     }
 }
@@ -276,7 +281,8 @@ private fun ScoreRow(
 fun ScoreInput(
     score: Score,
     onCommitScore: (Score) -> Unit,
-    label: String
+    label: String,
+    modifier: Modifier = Modifier // add modifier
 ) {
     var text by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(score.toString()))
@@ -303,14 +309,17 @@ fun ScoreInput(
                 focusManager.clearFocus() // optional: close keyboard on Android
             }
         ),
-        modifier = Modifier.onFocusChanged { state ->
+        modifier = modifier.onFocusChanged { state ->
             val lost = hadFocus && !state.isFocused
             if (lost) {
                 val parsed = text.text.toDoubleOrNull() ?: 0.0
                 onCommitScore(Score(parsed))
             }
             hadFocus = state.isFocused
-        },
+        }
+            .heightIn(min = 56.dp) // standard M3 height
+            .widthIn(min = 96.dp, max = 120.dp), // consistent compact width (fits 99.99)
+//        label = { Text(label) },
         trailingIcon = {
             if (text.text.isNotEmpty()) {
                 IconButton({
