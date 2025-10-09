@@ -1,0 +1,101 @@
+= Gym Meet
+
+Gym Meet is an exercise.
+The code state is alpha and not thoroughly tested.
+The application allows to score gymnastics exercises.
+If you are not practicing `Agrès` / `Geräteturnen` this probably won't interest you.
+
+As of now only the desktop and android version are implemented.
+If I have time, energy or people interested, I might try to go further, but don't count on it.
+
+This is a Kotlin Multiplatform project targeting Android, Web, Desktop (JVM).
+
+* link:./composeApp/src[/composeApp] is for code that will be shared across your Compose Multiplatform applications.
+  It contains several subfolders:
+** link:./composeApp/src/commonMain/kotlin[commonMain] is for code that’s common for all targets.
+** Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
+    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
+    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
+    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
+    folder is the appropriate location.
+
+== Build and Run Android Application
+
+To build and run the development version of the Android app, use the run configuration from the run widget
+in your IDE’s toolbar or build it directly from the terminal:
+
+- on macOS/Linux
+
+[source,shell]
+----
+  ./gradlew :composeApp:assembleDebug
+----
+
+- on Windows
+
+[source,shell]
+----
+  .\gradlew.bat :composeApp:assembleDebug
+----
+
+== Build and Run Desktop (JVM) Application
+
+To build and run the development version of the desktop app, use the run configuration from the run widget
+in your IDE’s toolbar or run it directly from the terminal:
+
+* on macOS/Linux
+
+[source,shell]
+----
+  ./gradlew :composeApp:run
+----
+
+* on Windows
+
+[source,shell]
+----
+  .\gradlew.bat :composeApp:run
+----
+
+== Build and Run Web Application
+
+To build and run the development version of the web app, use the run configuration from the run widget
+in your IDE's toolbar or run it directly from the terminal:
+
+* for the Wasm target (faster, modern browsers):
+
+** on macOS/Linux
+
+[source,shell]
+----
+    ./gradlew :composeApp:wasmJsBrowserDevelopmentRun
+----
+
+** on Windows
+
+[source,shell]
+----
+    .\gradlew.bat :composeApp:wasmJsBrowserDevelopmentRun
+----
+
+* for the JS target (slower, supports older browsers):
+
+** on macOS/Linux
+
+[source,shell]
+----
+    ./gradlew :composeApp:jsBrowserDevelopmentRun
+----
+
+** on Windows
+
+[source,shell]
+----
+    .\gradlew.bat :composeApp:jsBrowserDevelopmentRun
+----
+
+'''
+
+Learn more about https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html[Kotlin Multiplatform],
+https://github.com/JetBrains/compose-multiplatform/#compose-multiplatform[Compose Multiplatform],
+https://kotl.in/wasm/[Kotlin/Wasm]
