@@ -3,6 +3,8 @@
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.io.FileInputStream
+import java.util.*
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -65,10 +67,6 @@ kotlin {
             implementation(compose.uiTest)
         }
         jvmTest.dependencies {
-//            www.jetbrains.com/help/kotlin-multiplatform-dev/compose-test.html#qwvm1x_56
-//            implementation(libs.junit)
-//            implementation(compose.desktop.uiTestJUnit4)
-//            implementation(libs.kotlin.testJunit)
             implementation(compose.desktop.currentOs)
         }
 
@@ -90,6 +88,12 @@ sqldelight {
         }
     }
 }
+val localProps = Properties().apply {
+    val localFile = rootProject.file("local.properties")
+    if (localFile.exists()) {
+        load(FileInputStream(localFile))
+    }
+}
 
 android {
     namespace = "org.fb.gym.meet"
@@ -100,16 +104,28 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.1"
     }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    signingConfigs {
+        create("release") {
+            storeFile = file("../etc/keystore.jks")
+            keyAlias = "gym-meet"
+            storePassword = localProps.getProperty("KEYSTORE_PASS")
+                ?: System.getenv("KEYSTORE_PASS")
+                        ?: error("Keystore password missing")
+            keyPassword = localProps.getProperty("KEY_ALIAS_PASS")
+                ?: System.getenv("KEY_ALIAS_PASS")
+                        ?: error("Key alias password missing")
+        }
+    }
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
