@@ -336,6 +336,7 @@ fun ScoreInput(
                         }
 
                         else -> {
+                            println("focus lost: $raw")
                             // Value is valid – commit to the ViewModel
                             val s = Score(parsed)
                             onCommitScore(s)
@@ -346,12 +347,6 @@ fun ScoreInput(
                         }
                     }
                 }
-//                val lost = hadFocus && !state.isFocused
-//                if (lost) {
-//                    val parsed = text.text.toDoubleOrNull() ?: 0.0
-//                    onCommitScore(Score(parsed))
-//                }
-//                hadFocus = state.isFocused
             }
             .testTag("scoreInput$label"),
         trailingIcon = {

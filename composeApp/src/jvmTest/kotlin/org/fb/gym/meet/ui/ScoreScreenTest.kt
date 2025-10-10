@@ -4,10 +4,7 @@ import androidx.compose.ui.test.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import org.fb.gym.meet.data.Category
-import org.fb.gym.meet.data.Gender
-import org.fb.gym.meet.data.Gymnast
-import org.fb.gym.meet.data.ScoreCard
+import org.fb.gym.meet.data.*
 import kotlin.test.Test
 
 val male = Gymnast("ob", "Olivier", "Bommeli", Category.C5, Gender.M)
@@ -65,7 +62,13 @@ class ScoreScreenTest {
 }
 
 class FakeScoreContract(
-    initialCard: ScoreCard? = ScoreCard()
+    initialCard: ScoreCard? = ScoreCard(
+        Score(1.0),
+        Score(2.0),
+        VaultScore(Score(3.0), Score(4.0)),
+        Score(5.0),
+        Score(6.0),
+    )
 ) : ScoreContract {
 
     private val _scoreCard = MutableStateFlow(initialCard)
