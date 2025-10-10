@@ -216,7 +216,8 @@ private fun NavGraphBuilder.editGymnastRoute(
             gymnastId = id,
             vm = EditGymnastViewModel(id, gymnastRepo),
             onBack = { navController.popBackStack() },
-            onSaved = { navController.popBackStack() }   // go back after save
+            onSaved = { navController.popBackStack() },
+            onDelete = { navController.popBackStack() },
         )
     }
 }

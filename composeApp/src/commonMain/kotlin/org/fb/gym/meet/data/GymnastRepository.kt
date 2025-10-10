@@ -42,6 +42,11 @@ class GymnastRepository(
             gymnast.category.name,
         )
     }
+
+    fun delete(gymnastId: String?) {
+        if (gymnastId == null) return
+        db.meetQueries.deleteGymnast(gymnastId)
+    }
 }
 
 private fun List<org.fb.gym.meet.db.Gymnast>.toGymnasts(): List<Gymnast> {

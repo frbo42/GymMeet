@@ -18,6 +18,7 @@ interface EditGymnastContract {
     fun onLastNameChanged(text: String)
     fun onGenderChanged(gender: Gender)
     fun onCategoryChanged(category: Category)
+    fun delete()
 }
 
 class EditGymnastViewModel(
@@ -71,6 +72,10 @@ class EditGymnastViewModel(
 
     override fun onCategoryChanged(category: Category) {
         _uiState.update { it.copy(category = category) }
+    }
+
+    override fun delete() {
+        repository.delete(gymnastId)
     }
 
     // -----------------------------------------------------------------

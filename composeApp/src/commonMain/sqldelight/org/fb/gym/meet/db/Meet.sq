@@ -79,3 +79,7 @@ ON CONFLICT(id) DO UPDATE SET
     gender = excluded.gender,
     category = excluded.category
     ;
+
+deleteGymnast:
+DELETE FROM gymnast
+WHERE id = ?;

@@ -5,6 +5,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -27,10 +29,12 @@ fun EditGymnastScreen(
     /** Called when the user wants to go back (e.g., cancel). */
     onBack: () -> Unit = {},
     /** Called after a successful save – usually pop the back stack. */
-    onSaved: () -> Unit = {}
+    onSaved: () -> Unit = {},
+    onDelete: () -> Unit = {}
 ) {
 
     val uiState by vm.uiState.collectAsState()
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -47,8 +51,21 @@ fun EditGymnastScreen(
                     }
                 },
                 actions = {
-                    TextButton(onClick = { vm.onSave(onSaved) }) {
-                        Text("Save")
+                    IconButton(
+                        onClick = { showDeleteDialog = true },
+                        colors = IconButtonDefaults.iconButtonColors(
+                            contentColor = MaterialTheme.colorScheme.error
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete Meet"
+                        )
+                    }
+                    IconButton(
+                        onClick = { vm.onSave(onSaved) }
+                    ) {
+                        Icon(imageVector = Icons.Default.Save, contentDescription = "Save")
                     }
                 }
             )
@@ -150,6 +167,37 @@ fun EditGymnastScreen(
                 }
             }
         }
+    }
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Delete Meet") },
+            text = {
+                Text(
+                    "Are you sure you want to delete \"${uiState.firstName}\"? " +
+                            "This action cannot be undone."
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        vm.delete()
+                        showDeleteDialog = false
+                        onDelete()
+                    },
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = MaterialTheme.colorScheme.error
+                    )
+                ) {
+                    Text("Delete")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
     }
 }
 
