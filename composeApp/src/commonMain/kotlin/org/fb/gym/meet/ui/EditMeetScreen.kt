@@ -130,37 +130,16 @@ fun EditMeetScreen(
             )
         }
     }
-
-    if (showDeleteDialog) {
-        AlertDialog(
-            onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Delete Meet") },
-            text = {
-                Text(
-                    "Are you sure you want to delete \"${state.value.name}\"? " +
-                            "This action cannot be undone."
-                )
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        showDeleteDialog = false
-                        actions.onDeleteMeet()
-                    },
-                    colors = ButtonDefaults.textButtonColors(
-                        contentColor = MaterialTheme.colorScheme.error
-                    )
-                ) {
-                    Text("Delete")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("Cancel")
-                }
-            }
-        )
-    }
+    DeleteConfirmDialog(
+        visible = showDeleteDialog,
+        itemName = state.value.name,
+        title = "Delete Meet",
+        onConfirm = {
+            showDeleteDialog = false
+            actions.onDeleteMeet()
+        },
+        onDismiss = { showDeleteDialog = false }
+    )
 }
 
 @Composable

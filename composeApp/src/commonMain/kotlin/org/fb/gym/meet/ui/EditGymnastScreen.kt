@@ -168,37 +168,17 @@ fun EditGymnastScreen(
             }
         }
     }
-    if (showDeleteDialog) {
-        AlertDialog(
-            onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Delete Meet") },
-            text = {
-                Text(
-                    "Are you sure you want to delete \"${uiState.firstName}\"? " +
-                            "This action cannot be undone."
-                )
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        vm.delete()
-                        showDeleteDialog = false
-                        onDelete()
-                    },
-                    colors = ButtonDefaults.textButtonColors(
-                        contentColor = MaterialTheme.colorScheme.error
-                    )
-                ) {
-                    Text("Delete")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("Cancel")
-                }
-            }
-        )
-    }
+    DeleteConfirmDialog(
+        visible = showDeleteDialog,
+        itemName = uiState.firstName,
+        title = "Delete Gymnast",
+        onConfirm = {
+            showDeleteDialog = false
+            vm.delete()
+            onDelete()
+        },
+        onDismiss = { showDeleteDialog = false }
+    )
 }
 
 
