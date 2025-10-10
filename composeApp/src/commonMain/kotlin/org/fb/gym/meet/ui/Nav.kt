@@ -13,6 +13,9 @@ import org.fb.gym.meet.data.ScoreCardId
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
+private const val MEET_ID = "meetId"
+private const val GYMNAST_ID = "gymnastId"
+
 sealed class Screen(val route: String) {
     object Meet : Screen("/meets")
     object CreateMeet : Screen("/meets/create")
@@ -104,8 +107,8 @@ private fun NavGraphBuilder.editMeetRoute(
     gymnastRepo: GymnastRepository,
     navController: NavHostController
 ) {
-    composable(Screen.EditMeet("{meetId}").route) { backStackEntry ->
-        val handle = backStackEntry.savedStateHandle.get<String>("meetId")
+    composable(Screen.EditMeet("{$MEET_ID}").route) { backStackEntry ->
+        val handle = backStackEntry.savedStateHandle.get<String>(MEET_ID)
         val meetId = handle ?: Uuid.random().toString()
         val vm = remember(meetRepo, gymnastRepo) {
             createEditMeetViewModel(
@@ -145,9 +148,9 @@ private fun NavGraphBuilder.participantRoute(
     navController: NavHostController
 ) {
     composable(
-        route = Screen.Participant("{meetId}").route
+        route = Screen.Participant("{$MEET_ID}").route
     ) { backStackEntry ->
-        val handle = backStackEntry.savedStateHandle.get<String>("meetId")
+        val handle = backStackEntry.savedStateHandle.get<String>(MEET_ID)
         val meetId = handle ?: return@composable
         val meet = meetRepo.observeMeet(meetId).collectAsState(null).value
         val gymnasts = gymnastRepo.observeGymnasts().collectAsState(emptySet()).value
@@ -168,9 +171,9 @@ private fun NavGraphBuilder.scoreRoute(
     gymnastRepo: GymnastRepository,
     navController: NavHostController
 ) {
-    composable(Screen.Score("{meetId}", "{gymnastId}").route) { backStackEntry ->
-        val handleMeetId = backStackEntry.savedStateHandle.get<String>("meetId")
-        val handleGymnastId = backStackEntry.savedStateHandle.get<String>("gymnastId")
+    composable(Screen.Score("{$MEET_ID}", "{$GYMNAST_ID}").route) { backStackEntry ->
+        val handleMeetId = backStackEntry.savedStateHandle.get<String>(MEET_ID)
+        val handleGymnastId = backStackEntry.savedStateHandle.get<String>(GYMNAST_ID)
         val meetId = handleMeetId ?: return@composable
         val gymnastId = handleGymnastId ?: return@composable
 
@@ -210,8 +213,8 @@ private fun NavGraphBuilder.editGymnastRoute(
     gymnastRepo: GymnastRepository,
     navController: NavHostController
 ) {
-    composable(Screen.EditGymnast("{gymnastId}").route) { backStackEntry ->
-        val id = backStackEntry.savedStateHandle.get<String>("gymnastId")
+    composable(Screen.EditGymnast("{$GYMNAST_ID}").route) { backStackEntry ->
+        val id = backStackEntry.savedStateHandle.get<String>(GYMNAST_ID)
         EditGymnastScreen(
             gymnastId = id,
             vm = EditGymnastViewModel(id, gymnastRepo),
