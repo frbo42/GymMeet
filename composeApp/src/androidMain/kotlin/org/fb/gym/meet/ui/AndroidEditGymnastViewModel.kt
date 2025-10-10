@@ -26,4 +26,5 @@ class AndroidEditGymnastViewModel(gymnastId: String?, repository: GymnastReposit
     override fun onGenderChanged(gender: Gender) = delegate.onGenderChanged(gender)
 
     override fun onCategoryChanged(category: Category) = delegate.onCategoryChanged(category)
+    override fun delete() = delegate.delete()
 }

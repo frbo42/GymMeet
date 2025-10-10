@@ -40,4 +40,5 @@ class AndroidEditMeetViewModel(meetId: String, meetRepo: MeetRepository, gymnast
     override fun toggleGymnastSelection(gymnastId: String) = delegate.toggleGymnastSelection(gymnastId)
 
     override fun onDateChanged(newDate: String) = delegate.onDateChanged(newDate)
+    override fun onDelete() = delegate.onDelete()
 }
