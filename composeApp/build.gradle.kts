@@ -132,6 +132,17 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    applicationVariants.all {
+        outputs.all {
+            val variant = this@all
+            if (this is com.android.build.gradle.internal.api.BaseVariantOutputImpl) {
+                outputFileName = if (variant.name == "release")
+                    "gym-meet.apk"
+                else
+                    "gym-meet-${variant.name}.apk"
+            }
+        }
+    }
 }
 
 dependencies {
