@@ -112,4 +112,8 @@ class MeetRepository(
     fun saveScoreCard(scoreCardId: ScoreCardId, scoreCard: ScoreCard) {
         db.meetQueries.updateScoreCard(scoreCard.toJson(), scoreCardId.meetId, scoreCardId.gymnastId)
     }
+
+    fun delete(meetId: String) {
+        db.meetQueries.deleteMeet(meetId)
+    }
 }

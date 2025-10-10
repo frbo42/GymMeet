@@ -123,7 +123,11 @@ private fun NavGraphBuilder.editMeetRoute(
                 navController.popBackStack()
             },
             onCreateGymnast = { navController.navigate(Screen.CreateGymnast.route) },
-            onEditGymnast = { gymnastId -> navController.navigate(Screen.EditGymnast(gymnastId).route) }
+            onEditGymnast = { gymnastId -> navController.navigate(Screen.EditGymnast(gymnastId).route) },
+            onDeleteMeet = {
+                vm.onDelete()
+                navController.popBackStack()
+            }
         )
         EditMeetScreen(
             state = uiState,

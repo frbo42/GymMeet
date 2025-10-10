@@ -8,10 +8,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
@@ -33,6 +34,9 @@ fun EditMeetScreen(
     onDateChanged: (String) -> Unit,
     onGymnastToggle: (String) -> Unit,
 ) {
+
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -46,8 +50,21 @@ fun EditMeetScreen(
                     }
                 },
                 actions = {
-                    TextButton(onClick = actions.onSave) {
-                        Text("Save")
+                    IconButton(
+                        onClick = { showDeleteDialog = true },
+                        colors = IconButtonDefaults.iconButtonColors(
+                            contentColor = MaterialTheme.colorScheme.error
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete Meet"
+                        )
+                    }
+                    IconButton(
+                        onClick = actions.onSave
+                    ) {
+                        Icon(imageVector = Icons.Default.Save, contentDescription = "Save")
                     }
                 }
             )
@@ -112,6 +129,37 @@ fun EditMeetScreen(
                 modifier = Modifier.fillMaxWidth()
             )
         }
+    }
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Delete Meet") },
+            text = {
+                Text(
+                    "Are you sure you want to delete \"${state.value.name}\"? " +
+                            "This action cannot be undone."
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showDeleteDialog = false
+                        actions.onDeleteMeet()
+                    },
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = MaterialTheme.colorScheme.error
+                    )
+                ) {
+                    Text("Delete")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
     }
 }
 
@@ -229,7 +277,8 @@ data class EditMeetActions(
     val onSave: () -> Unit = {},
     /** Called when the user wants to add a brand‑new gymnast (navigate). */
     val onCreateGymnast: () -> Unit = {},
-    val onEditGymnast: (String) -> Unit = {}
+    val onEditGymnast: (String) -> Unit = {},
+    val onDeleteMeet: () -> Unit = {},
 )
 
 @OptIn(ExperimentalTime::class)

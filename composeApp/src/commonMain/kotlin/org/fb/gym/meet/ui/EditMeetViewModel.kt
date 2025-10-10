@@ -20,6 +20,7 @@ interface EditMeetContract {
     fun onNameChanged(newName: String)
     fun toggleGymnastSelection(gymnastId: String)
     fun onDateChanged(newDate: String)
+    fun onDelete()
 }
 
 /**
@@ -48,7 +49,7 @@ class EditMeetViewModel(
                 .collect { meet ->
                     _uiState.update {
                         it.copy(
-                            name = meet?.overview?.name ?: List(5) { ('a'..'z').random() }.joinToString(""),
+                            name = meet?.overview?.name ?: "",
                             date = meet?.overview?.date ?: today(),
                             selectedGymnastIds = meet?.participants?.map { it.gymnastId }?.toSet() ?: emptySet()
                         )
@@ -72,6 +73,10 @@ class EditMeetViewModel(
 
     override fun onDateChanged(newDate: String) {
         _uiState.update { it.copy(date = newDate, dateError = null) }
+    }
+
+    override fun onDelete() {
+        meetRepo.delete(meetId)
     }
 
     override fun toggleGymnastSelection(gymnastId: String) {

@@ -41,6 +41,10 @@ ON CONFLICT(id) DO UPDATE SET
     name = excluded.name,
     date = excluded.date;
 
+deleteMeet:
+DELETE FROM meet
+WHERE id = ?;
+
 insertParticipant:
 INSERT INTO participant(meet_id, gymnast_id, score_card)
 VALUES (?, ?, ?);
