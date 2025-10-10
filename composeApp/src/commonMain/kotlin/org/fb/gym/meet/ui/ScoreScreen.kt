@@ -117,7 +117,6 @@ private fun ScoreCardContent(
                 label = "Parallel Bars",
                 score = scoreCard.parallel,
                 onScoreChanged = { updateCard(scoreCard.copy(parallel = it)) },
-                modifier = Modifier.testTag("parallelBarRow"),
             )
         }
         // ----- HORIZONTAL BAR -------------------------------------------
@@ -240,7 +239,8 @@ private fun ScoreRow(
 ) {
     Card(
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .testTag("scoreRow$label"),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(

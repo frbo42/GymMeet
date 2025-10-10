@@ -16,6 +16,8 @@ val female = Gymnast("la", "Louise", "Auriou", Category.C6, Gender.F)
 @OptIn(ExperimentalTestApi::class)
 class ScoreScreenTest {
 
+    private val parallelTag = "scoreRowParallel Bars"
+
     @Test
     fun `when male parallel bar present`() = runComposeUiTest {
         setContent {
@@ -25,7 +27,7 @@ class ScoreScreenTest {
             )
         }
 
-        onNodeWithTag("parallelBarRow").assertExists()
+        onNodeWithTag(parallelTag).assertExists()
     }
 
     @Test
@@ -37,7 +39,7 @@ class ScoreScreenTest {
             )
         }
 
-        onNodeWithTag("parallelBarRow").assertDoesNotExist()
+        onNodeWithTag(parallelTag).assertDoesNotExist()
     }
 
     @Test
