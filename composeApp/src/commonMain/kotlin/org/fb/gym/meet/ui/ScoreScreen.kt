@@ -278,6 +278,8 @@ private fun ScoreRow(
     }
 }
 
+private val TYPING_REGEX = Regex("^\\d{0,2}(\\.)?\\d{0,2}$")
+
 @Composable
 fun ScoreInput(
     score: Score,
@@ -293,14 +295,27 @@ fun ScoreInput(
     val focusManager = LocalFocusManager.current
 
     var errorMessage by remember { mutableStateOf<String?>(null) }
-    val typingRegex = remember { Regex("^\\d{0,2}(\\.)?\\d{0,2}$") }
+    var touched by remember { mutableStateOf(false) }
 
+    fun commitIfValid(raw: String) {
+        val parsed = raw.toDoubleOrNull()
+        val validation = parsed.validate()
+        if (validation == null) {
+            val s = Score(parsed!!)
+            onCommitScore(s)
+            errorMessage = null
+            text = TextFieldValue(s.toString())
+        } else {
+            errorMessage = validation
+        }
+    }
     OutlinedTextField(
         value = text,
         onValueChange = { new ->
-            if (new.text.matches(typingRegex)) {
+            if (new.text.matches(TYPING_REGEX)) {
                 text = new
                 errorMessage = null
+                touched = true
             }
         },
         isError = errorMessage != null,
@@ -319,33 +334,8 @@ fun ScoreInput(
         modifier = modifier
             .heightIn(min = 56.dp)
             .onFocusChanged { state ->
-                if (!state.isFocused) {
-                    val raw = text.text
-                    val parsed = raw.toDoubleOrNull()
-                    when {
-                        parsed == null -> {
-                            errorMessage = "Please enter a number"
-                        }
-
-                        parsed < 0.0 -> {
-                            errorMessage = "Value must be ≥ 0"
-                        }
-
-                        parsed > 10.0 -> {
-                            errorMessage = "Value must be ≤ 10"
-                        }
-
-                        else -> {
-                            println("focus lost: $raw")
-                            // Value is valid – commit to the ViewModel
-                            val s = Score(parsed)
-                            onCommitScore(s)
-                            errorMessage = null
-                            // Optionally format the text to two decimals
-                            text = TextFieldValue(s.toString().take(5))
-                            focusManager.clearFocus()
-                        }
-                    }
+                if (!state.isFocused && touched) {
+                    commitIfValid(text.text)
                 }
             }
             .testTag("scoreInput$label"),
@@ -372,3 +362,9 @@ fun ScoreInput(
     )
 }
 
+private fun Double?.validate(): String? = when {
+    this == null -> "Please enter a number"
+    this < 0.0 -> "Value must be ≥ 0"
+    this > 10.0 -> "Value must be ≤ 10"
+    else -> null
+}

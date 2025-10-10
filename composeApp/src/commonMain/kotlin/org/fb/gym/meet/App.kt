@@ -20,9 +20,6 @@ fun App(
         val db = db()
         val meetRepo = MeetRepository(db)
         val gymnastRepo = GymnastRepository(db)
-        //        Screen.valueOf(
-//            backStackEntry?.destination?.route ?: Screen.Meet.name
-//        )
         AppNavHost(navController, meetRepo, gymnastRepo)
     }
 }
