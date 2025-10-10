@@ -93,7 +93,7 @@ private fun ScoreCardContent(
             icon = Res.drawable.ic_floor,
             label = "Floor",
             score = scoreCard.floor,
-            onScoreChanged = { updateCard(scoreCard.copy(floor = it)) }
+            onScoreChanged = { updateCard(scoreCard.copy(floor = it)) },
         )
 
         // ----- RINGS ----------------------------------------------------
@@ -229,6 +229,7 @@ private fun VaultRow(
         }
     }
 }
+
 @Composable
 private fun ScoreRow(
     icon: DrawableResource,
@@ -289,14 +290,20 @@ fun ScoreInput(
     }
     LaunchedEffect(score) { text = TextFieldValue(score.toString()) }
 
-    var hadFocus by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
+
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    val typingRegex = remember { Regex("^\\d{0,2}(\\.)?\\d{0,2}$") }
 
     OutlinedTextField(
         value = text,
         onValueChange = { new ->
-            if (new.text.matches(Regex("^\\d{0,2}(\\.\\d{0,2})?$"))) text = new
+            if (new.text.matches(typingRegex)) {
+                text = new
+                errorMessage = null
+            }
         },
+        isError = errorMessage != null,
         singleLine = true,
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Decimal,
@@ -312,20 +319,61 @@ fun ScoreInput(
         modifier = modifier
             .heightIn(min = 56.dp)
             .onFocusChanged { state ->
-                val lost = hadFocus && !state.isFocused
-                if (lost) {
-                    val parsed = text.text.toDoubleOrNull() ?: 0.0
-                    onCommitScore(Score(parsed))
+                if (!state.isFocused) {
+                    val raw = text.text
+                    val parsed = raw.toDoubleOrNull()
+                    when {
+                        parsed == null -> {
+                            errorMessage = "Please enter a number"
+                        }
+
+                        parsed < 0.0 -> {
+                            errorMessage = "Value must be ≥ 0"
+                        }
+
+                        parsed > 10.0 -> {
+                            errorMessage = "Value must be ≤ 10"
+                        }
+
+                        else -> {
+                            // Value is valid – commit to the ViewModel
+                            val s = Score(parsed)
+                            onCommitScore(s)
+                            errorMessage = null
+                            // Optionally format the text to two decimals
+                            text = TextFieldValue(s.toString().take(5))
+                            focusManager.clearFocus()
+                        }
+                    }
                 }
-                hadFocus = state.isFocused
-            },
+//                val lost = hadFocus && !state.isFocused
+//                if (lost) {
+//                    val parsed = text.text.toDoubleOrNull() ?: 0.0
+//                    onCommitScore(Score(parsed))
+//                }
+//                hadFocus = state.isFocused
+            }
+            .testTag("scoreInput$label"),
         trailingIcon = {
             if (text.text.isNotEmpty()) {
                 IconButton({
                     text = TextFieldValue("")
                     onCommitScore(Score(0.0))
-                }) { Icon(Icons.Filled.Clear, contentDescription = "Clear $label") }
+                    errorMessage = null
+                }) {
+                    Icon(Icons.Filled.Clear, contentDescription = "Clear $label")
+                }
+            }
+        },
+        supportingText = {
+            errorMessage?.let {
+                Text(
+                    text = it,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall
+                )
             }
         }
     )
 }
+

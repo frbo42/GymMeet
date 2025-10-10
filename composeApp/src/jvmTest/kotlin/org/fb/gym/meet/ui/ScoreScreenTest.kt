@@ -1,8 +1,6 @@
 package org.fb.gym.meet.ui
 
-import androidx.compose.ui.test.ExperimentalTestApi
-import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.runComposeUiTest
+import androidx.compose.ui.test.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,7 +21,7 @@ class ScoreScreenTest {
         setContent {
             ScoreScreen(
                 male,
-                FakeScoreContract(ScoreCard())
+                FakeScoreContract()
             )
         }
 
@@ -35,24 +33,47 @@ class ScoreScreenTest {
         setContent {
             ScoreScreen(
                 female,
-                FakeScoreContract(ScoreCard())
+                FakeScoreContract()
             )
         }
 
         onNodeWithTag("parallelBarRow").assertDoesNotExist()
     }
 
+    @Test
+    fun `when score is 8_6 expect 8_60`() = runComposeUiTest {
+        val vm = FakeScoreContract()
+        setContent {
+            ScoreScreen(
+                viewModel = vm
+            )
+        }
+        val floorRow = onNodeWithTag("scoreInputFloor")
+        floorRow.performTextClearance()
+        floorRow.performTextInput("8.6")
+        floorRow.performImeAction()
+
+        // Assert the saved score is 8.60 (as a Double equals 8.6; use string if you format to 2 decimals)
+        val saved = vm.current()!!
+        kotlin.test.assertEquals(8.60, saved.floor.value, 0.000001, "floor double should be 8.60")
+        // Optional: if Score.toString() formats to 2 decimals, assert that too:
+        kotlin.test.assertEquals("8.60", saved.floor.toString())
+    }
+
 }
 
 class FakeScoreContract(
-    initialCard: ScoreCard? = null
+    initialCard: ScoreCard? = ScoreCard()
 ) : ScoreContract {
 
     private val _scoreCard = MutableStateFlow(initialCard)
+
     override val scoreCard: StateFlow<ScoreCard?> = _scoreCard.asStateFlow()
 
     // The UI will call this; we just replace the value.
     override fun updateScoreCard(updated: ScoreCard) {
         _scoreCard.value = updated
     }
+
+    fun current(): ScoreCard? = scoreCard.value
 }

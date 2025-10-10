@@ -3,7 +3,7 @@ package org.fb.gym.meet.data
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 import kotlin.math.pow
-import kotlin.math.round
+import kotlin.math.roundToLong
 
 data class ScoreCardId(
     val meetId: String,
@@ -57,12 +57,12 @@ value class Score(val value: Double = 0.0) : Comparable<Score> {
         val factor = 10.0.pow(decimals.toDouble())
 
         // 2️⃣  Round half‑up (the same behaviour as java.util.Formatter)
-        val rounded = round(this * factor) / factor
+        val scaled = (this * factor).roundToLong()
 
         // 3️⃣  Build a string that always shows *exactly* `decimals` fraction digits.
         //     We cannot use String.format, so we construct it manually.
-        val integerPart = rounded.toLong()
-        val fractionPart = ((rounded - integerPart) * factor).toLong()
+        val integerPart = scaled / factor.toLong()
+        val fractionPart = scaled % factor.toLong()
 
         // Pad the fraction with leading zeros if necessary (e.g. 9.5 → "500")
         val fractionString = fractionPart
