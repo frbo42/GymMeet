@@ -14,6 +14,8 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
@@ -291,6 +293,7 @@ fun ScoreInput(
     LaunchedEffect(score) { text = TextFieldValue(score.toString()) }
 
     val focusManager = LocalFocusManager.current
+    val focusRequester = remember { FocusRequester() }
 
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var touched by remember { mutableStateOf(false) }
@@ -336,6 +339,7 @@ fun ScoreInput(
                     commitIfValid(text.text)
                 }
             }
+            .focusRequester(focusRequester)
             .testTag("scoreInput$label"),
         trailingIcon = {
             if (text.text.isNotEmpty()) {
@@ -343,6 +347,7 @@ fun ScoreInput(
                     text = TextFieldValue("")
                     onCommitScore(Score(0.0))
                     errorMessage = null
+                    focusRequester.requestFocus()
                 }) {
                     Icon(Icons.Filled.Clear, contentDescription = "Clear $label")
                 }
