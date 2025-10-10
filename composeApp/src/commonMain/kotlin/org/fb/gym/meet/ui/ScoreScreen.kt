@@ -37,8 +37,6 @@ fun ScoreScreen(
     // Keep a mutable copy locally – this is the source of truth for the UI
     val scoreCard by viewModel.scoreCard.collectAsState()
 
-    // Helper to propagate changes upward (e.g., to a ViewModel)
-
     Scaffold(
         topBar = {
             TopAppBar(
