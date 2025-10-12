@@ -10,10 +10,13 @@
 
     <!-- meet -->
     <string name="title_edit_meet">Edit Meet</string>
+    <string name="title_meets">Meets</string>
+    <string name="title_meet">Gymnasts: %1$s</string>
+    <string name="label_no_meet">No Meet selected</string>
     <string name="label_meet_name">Meet name</string>
     <string name="label_meet_date">Date (DD.MM.YYYY)</string>
     <string name="label_meet_gymnasts">Gymnasts</string>
-    <string name="meet_no_gymnasts">No gymnasts in the system - tap "Add" to create one.</string>
+    <string name="meet_no_gymnasts">No gymnasts in the system—tap "Add" to create one.</string>
     <string name="meet_gymnast">%1$s %2$s (%3$s)</string>
     <string name="dialog_meet_delete_title">Delete Meet</string>
     <string name="dialog_delete_message">Are you sure you want to delete %1$s? This action cannot be undone</string>

@@ -12,8 +12,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import gymmeet.composeapp.generated.resources.Res
+import gymmeet.composeapp.generated.resources.label_no_meet
+import gymmeet.composeapp.generated.resources.title_meet
 import org.fb.gym.meet.data.Gymnast
 import org.fb.gym.meet.data.Meet
+import org.jetbrains.compose.resources.stringResource
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -26,7 +30,14 @@ fun ParticipantScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (meet == null) "No meet selected" else "Gymnasts: ${meet.overview.name}") },
+                title = {
+                    Text(
+                        if (meet == null)
+                            stringResource(Res.string.label_no_meet)
+                        else
+                            stringResource(Res.string.title_meet, meet.overview.name)
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = actions.onBack) {
                         Icon(

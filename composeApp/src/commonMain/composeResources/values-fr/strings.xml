@@ -11,32 +11,35 @@
 
     <!-- Meet -->
     <string name="title_edit_meet">Modifier le concours</string>
+    <string name="title_meets">Concours</string>
+    <string name="title_meet">Gymnastes : %1$s</string>
+    <string name="label_no_meet">Aucun concours sélectionné</string>
     <string name="label_meet_name">Nom du concours</string>
     <string name="label_meet_date">Date (JJ.MM.AAAA)</string>
     <string name="label_meet_gymnasts">Gymnastes</string>
     <string name="meet_no_gymnasts">
-        Aucun gymnaste dans le système – cliquez sur « Ajouter » pour en créer un.
+        Aucun gymnaste dans le système — appuyez sur « Ajouter » pour en créer un.
     </string>
     <string name="meet_gymnast">%1$s %2$s (%3$s)</string>
     <string name="dialog_meet_delete_title">Supprimer le concours</string>
     <string name="dialog_delete_message">
-        Êtes‑vous sûr de vouloir supprimer %1$s ? Cette action est irréversible.
+        Êtes‑vous sûr de vouloir supprimer %1$s ? Cette action ne peut pas être annulée.
     </string>
 
     <!-- Gymnast -->
-    <string name="title_create_gymnast">Créer un(e) gymnaste</string>
-    <string name="title_edit_gymnast">Modifier le/la gymnaste</string>
+    <string name="title_create_gymnast">Créer un gymnaste</string>
+    <string name="title_edit_gymnast">Modifier le gymnaste</string>
     <string name="label_gymnast_first_name">Prénom</string>
     <string name="label_gymnast_last_name">Nom</string>
     <string name="label_gymnast_gender">Sexe</string>
-    <string name="label_gymnast_male">Homme</string>
-    <string name="label_gymnast_female">Femme</string>
+    <string name="label_gymnast_male">Masculin</string>
+    <string name="label_gymnast_female">Féminin</string>
     <string name="label_gymnast_category">Catégorie</string>
     <string name="error_gymnast_last_name_required">Le nom de famille est requis</string>
     <string name="error_gymnast_first_name_required">Le prénom est requis</string>
-    <string name="dialog_gymnast_delete_title">Supprimer le/la gymnaste</string>
+    <string name="dialog_gymnast_delete_title">Supprimer le gymnaste</string>
 
-    <!-- Categories (translated) -->
+    <!-- Categories (keep the same identifiers, only the display text changes) -->
     <string name="category_c1">C1</string>
     <string name="category_c2">C2</string>
     <string name="category_c3">C3</string>

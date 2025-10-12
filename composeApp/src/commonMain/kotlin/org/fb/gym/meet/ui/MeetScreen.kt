@@ -12,7 +12,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import gymmeet.composeapp.generated.resources.Res
+import gymmeet.composeapp.generated.resources.title_meets
 import org.fb.gym.meet.data.MeetOverview
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -25,7 +28,7 @@ fun MeetScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Meets") },
+                title = { Text(stringResource(Res.string.title_meets)) },
                 actions = {
                     IconButton(onClick = actions.onCreateMeet) {
                         Icon(
