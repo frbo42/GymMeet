@@ -51,18 +51,14 @@ class MeetRepository(
         return MeetOverview(
             id = id,
             name = name,
-            date = date
+            date = date.toDisplayDate()
         )
     }
 
     private fun org.fb.gym.meet.db.Meet.toMeet(): Meet {
         val participants = selectParticipantsByMeetId(this.id)
         return Meet(
-            MeetOverview(
-                id = id,
-                name = name,
-                date = date
-            ),
+            this.toOverview(),
             participants = participants
         )
     }
@@ -78,7 +74,7 @@ class MeetRepository(
             db.meetQueries.upsertOverview(
                 meet.overview.id,
                 meet.overview.name,
-                meet.overview.date,
+                meet.overview.date.toIsoDate(),
             )
 
             // Delete all existing participants for this meet
@@ -116,4 +112,22 @@ class MeetRepository(
     fun delete(meetId: String) {
         db.meetQueries.deleteMeet(meetId)
     }
+}
+
+private fun String.toIsoDate(): String {
+    var isoDate = ""
+    this.split(".").let { parts ->
+        if (parts.size != 3) return ""
+        isoDate = "${parts[2]}-${parts[1]}-${parts[0]}"
+    }
+    return isoDate
+}
+
+private fun String.toDisplayDate(): String {
+    var isoDate = ""
+    this.split("-").let { parts ->
+        if (parts.size != 3) return ""
+        isoDate = "${parts[2]}.${parts[1]}.${parts[0]}"
+    }
+    return isoDate
 }
