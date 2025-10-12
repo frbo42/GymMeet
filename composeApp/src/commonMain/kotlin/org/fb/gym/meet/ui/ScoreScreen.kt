@@ -96,6 +96,7 @@ private fun ScoreCardContent(
             label = Res.string.score_floor,
             score = scoreCard.floor,
             onScoreChanged = { updateCard(scoreCard.copy(floor = it)) },
+            "Floor"
         )
 
         // ----- RINGS ----------------------------------------------------
@@ -103,7 +104,8 @@ private fun ScoreCardContent(
             icon = Res.drawable.ic_rings,
             label = Res.string.score_rings,
             score = scoreCard.rings,
-            onScoreChanged = { updateCard(scoreCard.copy(rings = it)) }
+            onScoreChanged = { updateCard(scoreCard.copy(rings = it)) },
+            "Rings"
         )
 
         // ----- VAULT ----------------------------------------------------
@@ -119,6 +121,7 @@ private fun ScoreCardContent(
                 label = Res.string.score_parallel_bar,
                 score = scoreCard.parallel,
                 onScoreChanged = { updateCard(scoreCard.copy(parallel = it)) },
+                "Parallel"
             )
         }
         // ----- HORIZONTAL BAR -------------------------------------------
@@ -126,7 +129,8 @@ private fun ScoreCardContent(
             icon = Res.drawable.ic_horizontal_bar,
             label = Res.string.score_horizontal_bar,
             score = scoreCard.bar,
-            onScoreChanged = { updateCard(scoreCard.copy(bar = it)) }
+            onScoreChanged = { updateCard(scoreCard.copy(bar = it)) },
+            "Horizontal"
         )
         TotalRow(scoreCard, gymnast)
     }
@@ -213,7 +217,8 @@ private fun VaultRow(
                 },
                 label = Res.string.score_vault_first,
                 modifier = Modifier
-                    .widthIn(min = 96.dp, max = 120.dp)
+                    .widthIn(min = 96.dp, max = 120.dp),
+                testTag = "vaultFirst"
             )
 
             Spacer(Modifier.width(8.dp))
@@ -225,7 +230,8 @@ private fun VaultRow(
                 },
                 label = Res.string.score_vault_second,
                 modifier = Modifier
-                    .widthIn(min = 96.dp, max = 120.dp)
+                    .widthIn(min = 96.dp, max = 120.dp),
+                "vaultSecond"
             )
         }
     }
@@ -237,13 +243,13 @@ private fun ScoreRow(
     label: StringResource,
     score: Score,
     onScoreChanged: (Score) -> Unit,
-    modifier: Modifier = Modifier
+    testTag: String
 ) {
     Card(
 
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
-            .testTag("scoreRow${stringResource(label)}"),
+            .testTag("scoreRow${testTag}"),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(
@@ -274,7 +280,8 @@ private fun ScoreRow(
                 onCommitScore = onScoreChanged,
                 label = label,
                 modifier = Modifier
-                    .widthIn(min = 96.dp, max = 120.dp)
+                    .widthIn(min = 96.dp, max = 120.dp),
+                testTag
             )
             Spacer(Modifier.width(12.dp))
         }
@@ -288,7 +295,8 @@ fun ScoreInput(
     score: Score,
     onCommitScore: (Score) -> Unit,
     label: StringResource,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    testTag: String
 ) {
     var text by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(score.toString()))
@@ -343,7 +351,7 @@ fun ScoreInput(
                 }
             }
             .focusRequester(focusRequester)
-            .testTag("scoreInput${stringResource(label)}"),
+            .testTag("scoreInput$testTag"),
         trailingIcon = {
             if (text.text.isNotEmpty()) {
                 IconButton({

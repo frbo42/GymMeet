@@ -13,7 +13,7 @@ val female = Gymnast("la", "Louise", "Auriou", Category.C6, Gender.F)
 @OptIn(ExperimentalTestApi::class)
 class ScoreScreenTest {
 
-    private val parallelTag = "scoreRowParallel Bars"
+    private val parallelTag = "scoreRowParallel"
 
     @Test
     fun `when male parallel bar present`() = runComposeUiTest {
