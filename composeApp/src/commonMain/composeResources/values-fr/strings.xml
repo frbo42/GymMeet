@@ -45,7 +45,23 @@
     <string name="category_c3">C3</string>
     <string name="category_c4">C4</string>
     <string name="category_c5">C5</string>
-    <string name="category_c6">C6 (Moyenne)</string>
-    <string name="category_c7">C7 (Moyenne)</string>
-    <string name="category_women_men">Femmes‑Hommes (Moyenne)</string>
+    <string name="category_c6">C6</string>
+    <string name="category_c7">C7</string>
+    <string name="category_women_men">Femmes‑Hommes</string>
+
+    <!-- score -->
+    <string name="score_empty">Pas encore de score pour ce gymnaste</string>
+    <string name="score_total">Total</string>
+    <string name="score_floor">Sol</string>
+    <string name="score_rings">Anneaux</string>
+    <string name="score_parallel_bar">Barres parallèles</string>
+    <string name="score_horizontal_bar">Barre horizontale</string>
+    <string name="score_vault_first">1ᵉ</string>
+    <string name="score_vault_second">2ᵉ</string>
+    <string name="score_vault">Saut</string>
+
+    <!-- errors -->
+    <string name="error_score_missing_value">Veuillez entrer un nombre</string>
+    <string name="error_score_value_must_smaller_then_10">Valeur doit être ≥ 0</string>
+    <string name="error_score_value_must_bigger_then_0">Valeur doit être ≤ 10</string>
 </resources>

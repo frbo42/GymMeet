@@ -26,7 +26,9 @@ import androidx.compose.ui.unit.dp
 import gymmeet.composeapp.generated.resources.*
 import org.fb.gym.meet.data.*
 import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -60,7 +62,7 @@ fun ScoreScreen(
                     .padding(innerPadding),
                 contentAlignment = Alignment.Center
             ) {
-                Text("No score yet for this gymnast.", style = MaterialTheme.typography.bodyLarge)
+                Text(stringResource(Res.string.score_empty), style = MaterialTheme.typography.bodyLarge)
             }
         } else {
             ScoreCardContent(
@@ -91,7 +93,7 @@ private fun ScoreCardContent(
         // ----- FLOOR ----------------------------------------------------
         ScoreRow(
             icon = Res.drawable.ic_floor,
-            label = "Floor",
+            label = Res.string.score_floor,
             score = scoreCard.floor,
             onScoreChanged = { updateCard(scoreCard.copy(floor = it)) },
         )
@@ -99,7 +101,7 @@ private fun ScoreCardContent(
         // ----- RINGS ----------------------------------------------------
         ScoreRow(
             icon = Res.drawable.ic_rings,
-            label = "Rings",
+            label = Res.string.score_rings,
             score = scoreCard.rings,
             onScoreChanged = { updateCard(scoreCard.copy(rings = it)) }
         )
@@ -114,7 +116,7 @@ private fun ScoreCardContent(
         if (gymnast.gender == Gender.M) {
             ScoreRow(
                 icon = Res.drawable.ic_parallel_bar,
-                label = "Parallel Bars",
+                label = Res.string.score_parallel_bar,
                 score = scoreCard.parallel,
                 onScoreChanged = { updateCard(scoreCard.copy(parallel = it)) },
             )
@@ -122,7 +124,7 @@ private fun ScoreCardContent(
         // ----- HORIZONTAL BAR -------------------------------------------
         ScoreRow(
             icon = Res.drawable.ic_horizontal_bar,
-            label = "Horizontal Bar",
+            label = Res.string.score_horizontal_bar,
             score = scoreCard.bar,
             onScoreChanged = { updateCard(scoreCard.copy(bar = it)) }
         )
@@ -151,7 +153,7 @@ private fun TotalRow(scoreCard: ScoreCard, gymnast: Gymnast) {
             Spacer(Modifier.width(12.dp))
 
             Text(
-                text = "Total",
+                text = stringResource(Res.string.score_total),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier
                     .weight(1f)
@@ -194,7 +196,7 @@ private fun VaultRow(
 
             // Keep the label readable; don't let inputs steal all space
             Text(
-                text = "Vault",
+                text = stringResource(Res.string.score_vault),
                 style = MaterialTheme.typography.titleMedium,
                 maxLines = 1,
                 modifier = Modifier
@@ -209,7 +211,7 @@ private fun VaultRow(
                 onCommitScore = { score ->
                     onVaultChanged(vault.copy(firstJump = score))
                 },
-                label = "1st",
+                label = Res.string.score_vault_first,
                 modifier = Modifier
                     .widthIn(min = 96.dp, max = 120.dp)
             )
@@ -221,7 +223,7 @@ private fun VaultRow(
                 onCommitScore = { score ->
                     onVaultChanged(vault.copy(secondJump = score))
                 },
-                label = "2nd",
+                label = Res.string.score_vault_second,
                 modifier = Modifier
                     .widthIn(min = 96.dp, max = 120.dp)
             )
@@ -232,7 +234,7 @@ private fun VaultRow(
 @Composable
 private fun ScoreRow(
     icon: DrawableResource,
-    label: String,
+    label: StringResource,
     score: Score,
     onScoreChanged: (Score) -> Unit,
     modifier: Modifier = Modifier
@@ -257,7 +259,7 @@ private fun ScoreRow(
             Spacer(Modifier.width(12.dp))
 
             Text(
-                text = label,
+                text = stringResource(label),
                 style = MaterialTheme.typography.titleMedium,
                 maxLines = 1,
                 modifier = Modifier
@@ -284,7 +286,7 @@ private val TYPING_REGEX = Regex("^\\d{0,2}(\\.)?\\d{0,2}$")
 fun ScoreInput(
     score: Score,
     onCommitScore: (Score) -> Unit,
-    label: String,
+    label: StringResource,
     modifier: Modifier = Modifier
 ) {
     var text by rememberSaveable(stateSaver = TextFieldValue.Saver) {
@@ -295,7 +297,7 @@ fun ScoreInput(
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
 
-    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var errorMessage by remember { mutableStateOf<StringResource?>(null) }
     var touched by remember { mutableStateOf(false) }
 
     fun commitIfValid(raw: String) {
@@ -356,7 +358,7 @@ fun ScoreInput(
         supportingText = {
             errorMessage?.let {
                 Text(
-                    text = it,
+                    text = stringResource(it),
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall
                 )
@@ -365,9 +367,9 @@ fun ScoreInput(
     )
 }
 
-private fun Double?.validate(): String? = when {
-    this == null -> "Please enter a number"
-    this < 0.0 -> "Value must be ≥ 0"
-    this > 10.0 -> "Value must be ≤ 10"
+private fun Double?.validate(): StringResource? = when {
+    this == null -> Res.string.error_score_missing_value
+    this < 0.0 -> Res.string.error_score_value_must_bigger_then_0
+    this > 10.0 -> Res.string.error_score_value_must_smaller_then_10
     else -> null
 }

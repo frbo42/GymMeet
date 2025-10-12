@@ -48,4 +48,20 @@
     <string name="category_c6">K6</string>
     <string name="category_c7">K7</string>
     <string name="category_women_men">Frauen‑Männer</string>
+
+    <!-- score -->
+    <string name="score_empty">Noch keine Punktzahl für diesen Turner</string>
+    <string name="score_total">Gesamt</string>
+    <string name="score_floor">Boden</string>
+    <string name="score_rings">Ringe</string>
+    <string name="score_parallel_bar">Parallelbarren</string>
+    <string name="score_horizontal_bar">Stufenbarren</string>
+    <string name="score_vault_first">1.</string>
+    <string name="score_vault_second">2.</string>
+    <string name="score_vault">Sprung</string>
+
+    <!-- errors -->
+    <string name="error_score_missing_value">Bitte geben Sie eine Zahl ein</string>
+    <string name="error_score_value_must_smaller_then_10">Wert muss ≥ 0 sein</string>
+    <string name="error_score_value_must_bigger_then_0">Wert muss ≤ 10 sein</string>
 </resources>

@@ -41,4 +41,18 @@
     <string name="category_c6">C6</string>
     <string name="category_c7">C7</string>
     <string name="category_women_men">Women‑Men</string>
+
+    <!--    score-->
+    <string name="score_empty">No score yet for this gymnast</string>
+    <string name="score_total">Total</string>
+    <string name="score_floor">Floor</string>
+    <string name="score_rings">Rings</string>
+    <string name="score_parallel_bar">Parallel Bars</string>
+    <string name="score_horizontal_bar">Horizontal Bar</string>
+    <string name="score_vault_first">1st</string>
+    <string name="score_vault_second">2nd</string>
+    <string name="score_vault">Vault</string>
+    <string name="error_score_missing_value">Please enter a number</string>
+    <string name="error_score_value_must_smaller_then_10">Value must be ≥ 0</string>
+    <string name="error_score_value_must_bigger_then_0">Value must be ≤ 10</string>
 </resources>
