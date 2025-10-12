@@ -18,6 +18,7 @@ import gymmeet.composeapp.generated.resources.*
 import org.fb.gym.meet.data.Category
 import org.fb.gym.meet.data.Gender
 import org.fb.gym.meet.data.Gymnast
+import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -98,13 +99,9 @@ fun EditGymnastScreen(
                 ),
                 modifier = Modifier.fillMaxWidth()
             )
-            if (uiState.firstNameError != null) {
-                Text(
-                    text = uiState.firstNameError ?: "",
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(start = 16.dp)
-                )
+
+            uiState.firstNameError?.let { lnErrorRes ->
+                ErrorText(lnErrorRes)
             }
 
             // ----- Last name --------------------------------------------------
@@ -120,13 +117,9 @@ fun EditGymnastScreen(
                 ),
                 modifier = Modifier.fillMaxWidth()
             )
-            if (uiState.lastNameError != null) {
-                Text(
-                    text = uiState.lastNameError ?: "",
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(start = 16.dp)
-                )
+
+            uiState.lastNameError?.let { lnErrorRes ->
+                ErrorText(lnErrorRes)
             }
 
             // ----- Gender (radio buttons) ------------------------------------
@@ -188,6 +181,16 @@ fun EditGymnastScreen(
     )
 }
 
+@Composable
+private fun ErrorText(lnErrorRes: StringResource) {
+    Text(
+        text = stringResource(lnErrorRes),
+        color = MaterialTheme.colorScheme.error,
+        style = MaterialTheme.typography.bodySmall,
+        modifier = Modifier.padding(start = 16.dp)
+    )
+}
+
 fun Category.toStringRes() = when (this) {
     Category.C1 -> Res.string.category_c1
     Category.C2 -> Res.string.category_c2
@@ -205,8 +208,8 @@ data class EditGymnastUiState(
     val lastName: String = "",
     val gender: Gender = Gender.M,
     val category: Category = Category.C5,
-    val firstNameError: String? = null,
-    val lastNameError: String? = null
+    val firstNameError: StringResource? = null,
+    val lastNameError: StringResource? = null
 ) {
     /** Helper to convert the UI state back into a Gymnast entity */
     fun toGymnast(existingId: String? = null): Gymnast = Gymnast(

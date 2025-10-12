@@ -18,9 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import gymmeet.composeapp.generated.resources.Res
-import gymmeet.composeapp.generated.resources.dialog_meet_delete_title
-import gymmeet.composeapp.generated.resources.title_edit_meet
+import gymmeet.composeapp.generated.resources.*
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime
@@ -84,7 +82,7 @@ fun EditMeetScreen(
             OutlinedTextField(
                 value = state.value.name,
                 onValueChange = onNameChanged,
-                label = { Text("Meet name") },
+                label = { Text(stringResource(Res.string.label_meet_name)) },
                 isError = state.value.nameError != null,
                 singleLine = true,
                 keyboardOptions = KeyboardOptions.Default.copy(
@@ -105,7 +103,7 @@ fun EditMeetScreen(
             OutlinedTextField(
                 value = state.value.date,
                 onValueChange = onDateChanged,
-                label = { Text("Date (DD.MM.YYYY)") },
+                label = { Text(stringResource(Res.string.label_meet_date)) },
                 placeholder = { Text("28.09.2025") },
                 isError = state.value.dateError != null,
                 singleLine = true,
@@ -161,7 +159,7 @@ fun GymnastMultiSelect(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                text = "Gymnasts",
+                text = stringResource(Res.string.label_meet_gymnasts),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.weight(1f)
             )
@@ -171,14 +169,14 @@ fun GymnastMultiSelect(
                     contentDescription = "Add Gymnast"
                 )
                 Spacer(Modifier.width(4.dp))
-                Text("Add")
+                Text(stringResource(Res.string.button_add))
             }
         }
 
         // If there are no gymnasts at all, show a hint
         if (allGymnasts.isEmpty()) {
             Text(
-                text = "No gymnasts in the system – tap “Add” to create one.",
+                text = stringResource(Res.string.meet_no_gymnasts),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(start = 8.dp, top = 4.dp)
@@ -224,7 +222,12 @@ private fun GymnastRow(
             )
             Spacer(Modifier.width(8.dp))
             Text(
-                text = "${gymnast.firstName} ${gymnast.lastName} (${gymnast.category})",
+                text = stringResource(
+                    Res.string.meet_gymnast,
+                    gymnast.firstName,
+                    gymnast.lastName,
+                    stringResource(gymnast.category.toStringRes())
+                ),
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.weight(1f)   // pushes the button to the end
             )

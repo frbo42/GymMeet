@@ -3,21 +3,27 @@
     <!-- App name -->
     <string name="app_name">Gymnastik‑Wettkampf</string>
 
-    <!-- meet -->
-    <string name="title_create_meet">Neues Turnier erstellen</string>
+    <!-- Common -->
+    <string name="button_save">Speichern</string>
+    <string name="button_add">Hinzufügen</string>
+    <string name="button_delete">Löschen</string>
+    <string name="button_cancel">Abbrechen</string>
+
+    <!-- Meet -->
     <string name="title_edit_meet">Turnier bearbeiten</string>
     <string name="label_meet_name">Name des Turniers</string>
     <string name="label_meet_date">Datum (TT.MM.JJJJ)</string>
-    <string name="button_save">Speichern</string>
-    <string name="button_delete">Löschen</string>
+    <string name="label_meet_gymnasts">Gymnasten</string>
+    <string name="meet_no_gymnasts">
+        Keine Gymnasten im System – tippen Sie auf „Hinzufügen“, um einen zu erstellen.
+    </string>
+    <string name="meet_gymnast">%1$s %2$s (%3$s)</string>
     <string name="dialog_meet_delete_title">Turnier löschen</string>
     <string name="dialog_delete_message">
         Sind Sie sicher, dass Sie %1$s löschen möchten? Dieser Vorgang kann nicht rückgängig gemacht werden.
     </string>
-    <string name="button_cancel">Abbrechen</string>
-    <string name="button_confirm_delete">Löschen</string>
 
-    <!-- gymnast -->
+    <!-- Gymnast -->
     <string name="title_create_gymnast">Gymnast erstellen</string>
     <string name="title_edit_gymnast">Gymnast bearbeiten</string>
     <string name="label_gymnast_first_name">Vorname</string>
@@ -26,15 +32,17 @@
     <string name="label_gymnast_male">Männlich</string>
     <string name="label_gymnast_female">Weiblich</string>
     <string name="label_gymnast_category">Kategorie</string>
+    <string name="error_gymnast_last_name_required">Nachname ist erforderlich</string>
+    <string name="error_gymnast_first_name_required">Vorname ist erforderlich</string>
     <string name="dialog_gymnast_delete_title">Gymnast löschen</string>
 
-    <!-- categories -->
-    <string name="category_c1">C1</string>
-    <string name="category_c2">C2</string>
-    <string name="category_c3">C3</string>
-    <string name="category_c4">C4</string>
-    <string name="category_c5">C5</string>
-    <string name="category_c6">C6</string>
-    <string name="category_c7">C7</string>
-    <string name="category_women_men">Frauen‑Männer</string>
+    <!-- Categories (translated to K1‑K7) -->
+    <string name="category_c1">K1</string>
+    <string name="category_c2">K2</string>
+    <string name="category_c3">K3</string>
+    <string name="category_c4">K4</string>
+    <string name="category_c5">K5</string>
+    <string name="category_c6">K6 (Durchschnitt)</string>
+    <string name="category_c7">K7 (Durchschnitt)</string>
+    <string name="category_women_men">Frauen‑Männer (Durchschnitt)</string>
 </resources>

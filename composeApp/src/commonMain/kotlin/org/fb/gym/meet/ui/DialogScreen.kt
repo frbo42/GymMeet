@@ -4,6 +4,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import gymmeet.composeapp.generated.resources.Res
 import gymmeet.composeapp.generated.resources.button_cancel
+import gymmeet.composeapp.generated.resources.button_delete
 import gymmeet.composeapp.generated.resources.dialog_delete_message
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
@@ -29,7 +30,7 @@ fun DeleteConfirmDialog(
                 colors = ButtonDefaults.textButtonColors(
                     contentColor = MaterialTheme.colorScheme.error
                 )
-            ) { Text("Delete") }
+            ) { Text(stringResource(Res.string.button_delete)) }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) { Text(stringResource(Res.string.button_cancel)) }

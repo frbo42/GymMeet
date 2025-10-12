@@ -1,5 +1,8 @@
 package org.fb.gym.meet.ui
 
+import gymmeet.composeapp.generated.resources.Res
+import gymmeet.composeapp.generated.resources.error_gymnast_first_name_required
+import gymmeet.composeapp.generated.resources.error_gymnast_last_name_required
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -8,6 +11,7 @@ import kotlinx.coroutines.launch
 import org.fb.gym.meet.data.Category
 import org.fb.gym.meet.data.Gender
 import org.fb.gym.meet.data.GymnastRepository
+import org.jetbrains.compose.resources.StringResource
 
 
 interface EditGymnastContract {
@@ -84,15 +88,15 @@ class EditGymnastViewModel(
     override fun onSave(onSaved: () -> Unit) {
         val current = _uiState.value
         var ok = true
-        var fnError: String? = null
-        var lnError: String? = null
+        var fnError: StringResource? = null
+        var lnError: StringResource? = null
 
         if (current.firstName.isBlank()) {
-            fnError = "First name required"
+            fnError = Res.string.error_gymnast_first_name_required
             ok = false
         }
         if (current.lastName.isBlank()) {
-            lnError = "Last name required"
+            lnError = Res.string.error_gymnast_last_name_required
             ok = false
         }
 
