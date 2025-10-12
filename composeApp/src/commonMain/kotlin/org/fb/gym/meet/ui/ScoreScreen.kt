@@ -240,9 +240,10 @@ private fun ScoreRow(
     modifier: Modifier = Modifier
 ) {
     Card(
+
         modifier = modifier
             .fillMaxWidth()
-            .testTag("scoreRow$label"),
+            .testTag("scoreRow${stringResource(label)}"),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(
@@ -342,7 +343,7 @@ fun ScoreInput(
                 }
             }
             .focusRequester(focusRequester)
-            .testTag("scoreInput$label"),
+            .testTag("scoreInput${stringResource(label)}"),
         trailingIcon = {
             if (text.text.isNotEmpty()) {
                 IconButton({
