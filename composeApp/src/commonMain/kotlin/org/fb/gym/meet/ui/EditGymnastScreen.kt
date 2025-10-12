@@ -14,9 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import gymmeet.composeapp.generated.resources.*
 import org.fb.gym.meet.data.Category
 import org.fb.gym.meet.data.Gender
 import org.fb.gym.meet.data.Gymnast
+import org.jetbrains.compose.resources.stringResource
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -40,7 +42,12 @@ fun EditGymnastScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(if (gymnastId == null) "Create Gymnast" else "Edit Gymnast")
+                    Text(
+                        if (gymnastId == null)
+                            stringResource(Res.string.title_create_gymnast)
+                        else
+                            stringResource(Res.string.title_edit_meet)
+                    )
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
@@ -82,7 +89,7 @@ fun EditGymnastScreen(
             OutlinedTextField(
                 value = uiState.firstName,
                 onValueChange = vm::onFirstNameChanged,
-                label = { Text("First name") },
+                label = { Text(stringResource(Res.string.label_gymnast_first_name)) },
                 isError = uiState.firstNameError != null,
                 singleLine = true,
                 keyboardOptions = KeyboardOptions.Default.copy(
@@ -104,7 +111,7 @@ fun EditGymnastScreen(
             OutlinedTextField(
                 value = uiState.lastName,
                 onValueChange = vm::onLastNameChanged,
-                label = { Text("Last name") },
+                label = { Text(stringResource(Res.string.label_gymnast_last_name)) },
                 isError = uiState.lastNameError != null,
                 singleLine = true,
                 keyboardOptions = KeyboardOptions.Default.copy(
@@ -123,29 +130,29 @@ fun EditGymnastScreen(
             }
 
             // ----- Gender (radio buttons) ------------------------------------
-            Text("Gender", style = MaterialTheme.typography.bodyMedium)
+            Text(stringResource(Res.string.label_gymnast_gender), style = MaterialTheme.typography.bodyMedium)
             Row(verticalAlignment = Alignment.CenterVertically) {
                 RadioButton(
                     selected = uiState.gender == Gender.M,
                     onClick = { vm.onGenderChanged(Gender.M) }
                 )
-                Text("Male", modifier = Modifier.padding(end = 16.dp))
+                Text(stringResource(Res.string.label_gymnast_male), modifier = Modifier.padding(end = 16.dp))
                 RadioButton(
                     selected = uiState.gender == Gender.F,
                     onClick = { vm.onGenderChanged(Gender.F) }
                 )
-                Text("Female")
+                Text(stringResource(Res.string.label_gymnast_female))
             }
 
             // ----- Category (dropdown) ---------------------------------------
-            Text("Category", style = MaterialTheme.typography.bodyMedium)
+            Text(stringResource(Res.string.label_gymnast_category), style = MaterialTheme.typography.bodyMedium)
             var expanded by remember { mutableStateOf(false) }
             Box {
                 OutlinedButton(
                     onClick = { expanded = true },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(uiState.category.name)
+                    Text(stringResource(uiState.category.toStringRes()))
                     Icon(
                         imageVector = Icons.Default.ArrowDropDown,
                         contentDescription = null
@@ -157,7 +164,7 @@ fun EditGymnastScreen(
                 ) {
                     Category.entries.forEach { cat ->
                         DropdownMenuItem(
-                            text = { Text(cat.name) },
+                            text = { Text(stringResource(cat.toStringRes())) },
                             onClick = {
                                 vm.onCategoryChanged(cat)
                                 expanded = false
@@ -171,7 +178,7 @@ fun EditGymnastScreen(
     DeleteConfirmDialog(
         visible = showDeleteDialog,
         itemName = uiState.firstName,
-        title = "Delete Gymnast",
+        title = Res.string.dialog_gymnast_delete_title,
         onConfirm = {
             showDeleteDialog = false
             vm.delete()
@@ -181,6 +188,16 @@ fun EditGymnastScreen(
     )
 }
 
+fun Category.toStringRes() = when (this) {
+    Category.C1 -> Res.string.category_c1
+    Category.C2 -> Res.string.category_c2
+    Category.C3 -> Res.string.category_c3
+    Category.C4 -> Res.string.category_c4
+    Category.C5 -> Res.string.category_c5
+    Category.C6 -> Res.string.category_c6
+    Category.C7 -> Res.string.category_c7
+    Category.WOMEN_MEN -> Res.string.category_women_men
+}
 
 @OptIn(ExperimentalUuidApi::class)
 data class EditGymnastUiState(

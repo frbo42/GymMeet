@@ -18,10 +18,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import gymmeet.composeapp.generated.resources.Res
+import gymmeet.composeapp.generated.resources.dialog_meet_delete_title
+import gymmeet.composeapp.generated.resources.title_edit_meet
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime
 import org.fb.gym.meet.data.Gymnast
+import org.jetbrains.compose.resources.stringResource
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -40,7 +44,7 @@ fun EditMeetScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Create New Meet") },
+                title = { Text(stringResource(Res.string.title_edit_meet)) },
                 navigationIcon = {
                     IconButton(onClick = actions.onBack) {
                         Icon(
@@ -133,7 +137,7 @@ fun EditMeetScreen(
     DeleteConfirmDialog(
         visible = showDeleteDialog,
         itemName = state.value.name,
-        title = "Delete Meet",
+        title = Res.string.dialog_meet_delete_title,
         onConfirm = {
             showDeleteDialog = false
             actions.onDeleteMeet()

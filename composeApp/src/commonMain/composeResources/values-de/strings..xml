@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App name -->
+    <string name="app_name">Gymnastik‑Wettkampf</string>
+
+    <!-- meet -->
+    <string name="title_create_meet">Neues Turnier erstellen</string>
+    <string name="title_edit_meet">Turnier bearbeiten</string>
+    <string name="label_meet_name">Name des Turniers</string>
+    <string name="label_meet_date">Datum (TT.MM.JJJJ)</string>
+    <string name="button_save">Speichern</string>
+    <string name="button_delete">Löschen</string>
+    <string name="dialog_meet_delete_title">Turnier löschen</string>
+    <string name="dialog_delete_message">
+        Sind Sie sicher, dass Sie %1$s löschen möchten? Dieser Vorgang kann nicht rückgängig gemacht werden.
+    </string>
+    <string name="button_cancel">Abbrechen</string>
+    <string name="button_confirm_delete">Löschen</string>
+
+    <!-- gymnast -->
+    <string name="title_create_gymnast">Gymnast erstellen</string>
+    <string name="title_edit_gymnast">Gymnast bearbeiten</string>
+    <string name="label_gymnast_first_name">Vorname</string>
+    <string name="label_gymnast_last_name">Nachname</string>
+    <string name="label_gymnast_gender">Geschlecht</string>
+    <string name="label_gymnast_male">Männlich</string>
+    <string name="label_gymnast_female">Weiblich</string>
+    <string name="label_gymnast_category">Kategorie</string>
+    <string name="dialog_gymnast_delete_title">Gymnast löschen</string>
+
+    <!-- categories -->
+    <string name="category_c1">C1</string>
+    <string name="category_c2">C2</string>
+    <string name="category_c3">C3</string>
+    <string name="category_c4">C4</string>
+    <string name="category_c5">C5</string>
+    <string name="category_c6">C6</string>
+    <string name="category_c7">C7</string>
+    <string name="category_women_men">Frauen‑Männer</string>
+</resources>

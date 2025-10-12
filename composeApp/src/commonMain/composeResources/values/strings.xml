@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Gym Meet</string>
+    <!-- meet -->
+    <string name="title_create_meet">Create New Meet</string>
+    <string name="title_edit_meet">Edit Meet</string>
+    <string name="label_meet_name">Meet name</string>
+    <string name="label_meet_date">Date (DD.MM.YYYY)</string>
+    <string name="button_save">Save</string>
+    <string name="button_delete">Delete</string>
+    <string name="dialog_meet_delete_title">Delete Meet</string>
+    <string name="dialog_delete_message">Are you sure you want to delete %1$s? This action cannot be undone</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="button_confirm_delete">Delete</string>
+
+    <!-- gymnast -->
+    <string name="title_create_gymnast">Create Gymnast</string>
+    <string name="title_edit_gymnast">Edit Gymnast</string>
+    <string name="label_gymnast_first_name">First Name</string>
+    <string name="label_gymnast_last_name">Last Name</string>
+    <string name="label_gymnast_gender">Gender</string>
+    <string name="label_gymnast_male">Male</string>
+    <string name="label_gymnast_female">Female</string>
+    <string name="label_gymnast_category">Category</string>
+    <string name="dialog_gymnast_delete_title">Delete Gymnast</string>
+    <string name="category_c1">C1</string>
+    <string name="category_c2">C2</string>
+    <string name="category_c3">C3</string>
+    <string name="category_c4">C4</string>
+    <string name="category_c5">C5</string>
+    <string name="category_c6">C6</string>
+    <string name="category_c7">C7</string>
+    <string name="category_women_men">Women‑Men</string>
+</resources>
